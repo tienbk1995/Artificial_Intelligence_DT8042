@@ -19,6 +19,13 @@ def A_UltraSensing(interval, realtime):
                "ultraSonicSensorRight:", ultraSonicSensorRight)
     return {"ultraLeft": ultraSonicSensorLeft, "ultraRight": ultraSonicSensorRight}
 
+def A_EngergySensing(interval, realtime):
+    data = World.getSensorReading("energySensor")
+    if realtime % interval == 0 or realtime == 0:
+        print ('Time:',realtime,\
+               'distance:',data.distance, 'direction:', data.direction)
+    return {"distance": data.distance, "direction": data.direction}
+
 def A_moveForward(speed=1, duration=5000, clockTime=-1, startTime=1000):
     while (World.getSimulationTime() < startTime):
         pass
@@ -48,6 +55,15 @@ def A_spin(speed=1, duration=5000, clockTime=-1, startTime=1000):
         pass
     print("Starting to spin with speed", speed, "for", duration, "ms.")
     World.execute(dict(speedLeft=speed, speedRight=-speed),duration,clockTime)
+
+def A_collectNearestBlock(samplingTime=1000):
+    currentTime = World.getSimulationTime()
+    if not hasattr(A_collectNearestBlock, "nextSamplingTime"):
+        A_collectNearestBlock.nextSamplingTime = currentTime
+    if currentTime >= A_collectNearestBlock.nextSamplingTime:
+        print("Trying to collect a block...")
+        print(World.collectNearestBlock())
+        A_collectNearestBlock.nextSamplingTime += samplingTime
 
 def A_stopMotion():
     World.STOP()
