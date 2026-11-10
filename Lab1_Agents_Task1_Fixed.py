@@ -9,6 +9,7 @@
 # should be a corresponding call to simxFinish at the end!
 import Lab1_Agents_Task1_World as World
 import Lab1_Agents_Lib as act
+import math, time
 
 # connect to the server
 robot = World.init()
@@ -16,20 +17,60 @@ robot = World.init()
 print(sorted(robot.keys()))
 
 while robot: # main Control loop
-    # Perception Phase: Get information about environment #
-    #####################################################
+
     simulationTime = World.getSimulationTime()
-    ##############################################
-    # Reasoning: figure out which action to take #
-    ##############################################
-    act.A_moveForward(speed=2, duration=15000, clockTime=-1, startTime=0)
-    act.A_moveBackward(speed=1, duration=15000, clockTime=-1, startTime=20000)
-    act.A_spin(speed=2, duration=5000, clockTime=-1, startTime=25000)
-    # try to collect energy block (will fail if not within range)
-    act.A_collectNearestBlock(samplingTime=1000)
-    act.A_stopMotion()
-    ########################################
-    # Action Phase: Assign speed to wheels #
-    ########################################
-    # assign speed to the wheels
+
+    # initial_pos = act.A_getCurrRobotPosition(robot)
+
+    # act.A_moveForward(speed=0.5, duration=3000)
+
+    # new_pos = act.A_getCurrRobotPosition(robot)
+
+    # actual_distance = math.sqrt(
+    #     (new_pos[0] - initial_pos[0])**2 +
+    #     (new_pos[1] - initial_pos[1])**2
+    # )
+
+    # print("Actual distance:", actual_distance)
+
+    # robot_pos = act.A_getCurrRobotPosition(robot)
+    # block_pos = act.A_getBlockPositions(robot, "ConcretBlock#3")
+
+    # print("Robot:", robot_pos)
+    # print("First block:", block_pos)
+    # dx = abs(block_pos[0] - robot_pos[0])
+    # dy = abs(block_pos[1] - robot_pos[1])
+
+    # steps = round((dx + dy) / 0.5)
+
+    # print("Steps to first block:", steps)
+
+    act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
+
+    act.A_calibrateRobot(robot, speed=0.5, durations=(1000, 2000, 3000), targetDistance=1.6615)
+
+    act.A_moveForward(
+        speed=0.5,
+        duration=27000
+    )
+
+    # act.A_turnRight(
+    #     speed=2,
+    #     duration=1000
+    # )
+
+    # act.A_moveForward(
+    #     speed=2,
+    #     duration=3000
+    # )
+
+    # act.A_turnLeft(
+    #     speed=2,
+    #     duration=1000
+    # )
+
+    # Attempt to collect a block
+    # act.A_collectNearestBlock(samplingTime=1000)
+    act.A_stopMotion(robot)
     act.A_stopExecution()
+
