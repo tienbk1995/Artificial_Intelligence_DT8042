@@ -22,24 +22,82 @@ OBSTACLE_THRESHOLD = 0.3
 COLLECTION_DISTANCE = 0.5
 TIME_OUT = 50000
 MAX_BLOCKS_NUMBER = 12
+AVOID_DISTANCE = 0.5  # metres
+
 
 currentBlockIndex = 0
 targetStartTime = World.getSimulationTime()
 
-def navigation():
+memory = {
+    "obstacles": [],
+    "actions": [],
+    "targetHistory": [],
+    "collectedBlocks": []
+}
+
+def isPositionRemembered(robotPosition):
+
+    for rememberedPosition in memory["obstacles"]:
+
+        dx = robotPosition[0] - rememberedPosition[0]
+        dy = robotPosition[1] - rememberedPosition[1]
+
+        distance = math.hypot(dx, dy)
+
+        if distance < AVOID_DISTANCE:
+            return True
+
+    return False
+
+def rememberObstaclePosition(robot):
+    retcode, robotPosition = act.A_getCurrRobotPosition(robot)
+    memory["obstacles"].append(robotPosition)
+    print("Remembered obstacle position:", robotPosition)
+
+def rememberCollectedBlock(blockInfo):
+    memory["collectedBlocks"].append(blockInfo)
+    print("Remembered collected block:", blockInfo)
+
+
+def navigation(robot=robot):
+
+    retCode, robotPosition = act.A_getCurrRobotPosition(robot)
+
+    if isPositionRemembered(robotPosition):
+
+        print("Previously encountered obstacle area!")
+
+        # Try another direction
+        act.A_spin(
+            speed=SPEED_LIMIT,
+            duration=DURATION_LIMIT,
+            clockTime=-1,
+            startTime=0
+        )
+        return
+    
     if (obstacle["ultraLeft"] < OBSTACLE_THRESHOLD or obstacle["ultraRight"] < OBSTACLE_THRESHOLD): 
         # Obstacle ahead detected
         act.A_spin(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
         act.A_moveBackward(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
+        # save position of the robot when it detects an obstacle
+        rememberObstaclePosition(robot)
+        
     elif (obstacle["ultraLeft"] < OBSTACLE_THRESHOLD): # Obstacle on the left detected
         act.A_turnRight(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
+        rememberObstaclePosition(robot)
+
     elif (obstacle["ultraRight"] < OBSTACLE_THRESHOLD): # Obstacle on the right detected
         act.A_turnLeft(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
+        rememberObstaclePosition(robot)
 
 def findBlock(collecting_pf=False):
     if (blockInfo["distance"] < COLLECTION_DISTANCE): # Block is close enough to collect
         act.A_stopMotion(robot)
-        collecting_pf()
+        res = collecting_pf()
+        if res is True:
+            print("Block collected successfully.")
+            rememberCollectedBlock(blockInfo)
     elif (blockInfo["direction"] < 0): # Block is to the left
         act.A_turnLeft(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
     elif (blockInfo["direction"] > 0): # Block is to the right
@@ -59,7 +117,7 @@ while robot: # main Control loop
     # Check whether the current target has timed out
     elapsedTime = simulationTime - targetStartTime
 
-    navigation()
+    navigation(robot)
 
     if elapsedTime < TIME_OUT:
         findBlock(act.A_collectNearestBlock)
@@ -82,6 +140,8 @@ while robot: # main Control loop
                 robot, currentBlockIndex
             )
         )
+    time.sleep(0.1)  # Add a small delay to avoid overwhelming the simulation
+    print(f"memory: {memory}")
 
 
     

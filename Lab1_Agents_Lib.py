@@ -62,8 +62,12 @@ def A_collectNearestBlock(samplingTime=1000):
         A_collectNearestBlock.nextSamplingTime = currentTime
     if currentTime >= A_collectNearestBlock.nextSamplingTime:
         print("Trying to collect a block...")
-        print(World.collectNearestBlock())
+        msg = World.collectNearestBlock()
+        print(msg)
+        res = (msg == "Energy collected :)")
         A_collectNearestBlock.nextSamplingTime += samplingTime
+        return res
+    return False
 
 def A_stopMotion(robot):
     World.STOP()
@@ -263,6 +267,7 @@ def A_collectSpecificBlock(robot, blockIndex):
         vrep.simxSetObjectPosition(robot.clientID, blockHandle, -1, [1000,1000,-2], vrep.simx_opmode_oneshot)
         World.blockHandleArray[blockName][-1] = [1000,1000,-2]
         print("Energy collected from block:", blockName)
-        return blockName
+        return True
+    
     print("No blocks nearby to collect from block")
-    return blockName
+    return False
