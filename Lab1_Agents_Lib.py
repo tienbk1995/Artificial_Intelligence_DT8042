@@ -186,8 +186,6 @@ def A_calibrateRobot(
         # Calculate average speed
         actual_speed = distance / elapsed_time
 
-        # Calculate distance error
-        distance_error = distance - targetDistance
 
         # Store measurement results
         results.append({
@@ -195,14 +193,12 @@ def A_calibrateRobot(
             "elapsed_time": elapsed_time,
             "distance": distance,
             "speed": actual_speed,
-            "error": distance_error
         })
 
-        print(f"\nCommand duration: {duration} ms")
-        print(f"Actual elapsed time: {elapsed_time:.3f} s")
-        print(f"Distance travelled: {distance:.4f} m")
-        print(f"Average speed: {actual_speed:.5f} m/s")
-        print(f"Distance error: {distance_error:.4f} m")
+        # print(f"\nCommand duration: {duration} ms")
+        # print(f"Actual elapsed time: {elapsed_time:.3f} s")
+        # print(f"Distance travelled: {distance:.4f} m")
+        # print(f"Average speed: {actual_speed:.5f} m/s")
 
     # Check whether any valid measurements were collected
     if not results:
@@ -227,7 +223,7 @@ def A_calibrateRobot(
     print(f"Target distance: {targetDistance:.4f} m")
     print(f"Estimated duration: {estimated_duration:.0f} ms")
 
-    return calibrated_speed, results
+    return calibrated_speed, estimated_duration
 
 
 def A_calibrateBlockDistance(robot, blockHandle, gridSize=0.5):
@@ -236,7 +232,7 @@ def A_calibrateBlockDistance(robot, blockHandle, gridSize=0.5):
     retCode, robotPos = A_getCurrRobotPosition(robot)
 
     # Get block's current world position
-    retCode, blockPos =A_getBlockPositions(robot, blockHandle)
+    retCode, blockPos = A_getBlockPositions(robot, blockHandle)
 
     if retCode != vrep.simx_return_ok:
         print("Error retrieving block position:", retCode)
@@ -249,26 +245,12 @@ def A_calibrateBlockDistance(robot, blockHandle, gridSize=0.5):
     # Euclidean distance
     distance = math.hypot(dx, dy)
 
-    # Manhattan distance in grid steps
-    horizontalSteps = round(abs(dx) / gridSize)
-    verticalSteps = round(abs(dy) / gridSize)
-
-    totalSteps = horizontalSteps + verticalSteps
-
     print("\n========== BLOCK DISTANCE ==========")
     print("Robot position:", robotPos)
     print("Block position:", blockPos)
-    print("Horizontal difference:", round(dx, 4), "m")
-    print("Vertical difference:", round(dy, 4), "m")
     print("Euclidean distance:", round(distance, 4), "m")
-    print("Horizontal steps:", horizontalSteps)
-    print("Vertical steps:", verticalSteps)
-    print("Total grid steps:", totalSteps)
 
     return {
         "distance": distance,
-        "horizontalSteps": horizontalSteps,
-        "verticalSteps": verticalSteps,
-        "totalSteps": totalSteps,
         "blockPosition": blockPos
     }

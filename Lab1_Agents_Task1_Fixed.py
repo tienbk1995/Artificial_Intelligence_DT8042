@@ -16,61 +16,50 @@ robot = World.init()
 # print important parts of the robot
 print(sorted(robot.keys()))
 
+blockInfo3 = act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
+blockInfo7 = act.A_calibrateBlockDistance(robot, "ConcretBlock#7")
+
+count = 0
 while robot: # main Control loop
 
     simulationTime = World.getSimulationTime()
 
-    # initial_pos = act.A_getCurrRobotPosition(robot)
-
-    # act.A_moveForward(speed=0.5, duration=3000)
-
-    # new_pos = act.A_getCurrRobotPosition(robot)
-
-    # actual_distance = math.sqrt(
-    #     (new_pos[0] - initial_pos[0])**2 +
-    #     (new_pos[1] - initial_pos[1])**2
-    # )
-
-    # print("Actual distance:", actual_distance)
-
-    # robot_pos = act.A_getCurrRobotPosition(robot)
-    # block_pos = act.A_getBlockPositions(robot, "ConcretBlock#3")
-
-    # print("Robot:", robot_pos)
-    # print("First block:", block_pos)
-    # dx = abs(block_pos[0] - robot_pos[0])
-    # dy = abs(block_pos[1] - robot_pos[1])
-
-    # steps = round((dx + dy) / 0.5)
-
-    # print("Steps to first block:", steps)
-
-    act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
-
-    act.A_calibrateRobot(robot, speed=0.5, durations=(1000, 2000, 3000), targetDistance=1.6615)
+    calibrated_speed3, estimated_duration3 = act.A_calibrateRobot(
+        robot, 
+        speed=0.5, 
+        durations=(1000, 2000, 3000), 
+        targetDistance=blockInfo3["distance"])
+    print(f"total_time3: {estimated_duration3} ms")
 
     act.A_moveForward(
         speed=0.5,
-        duration=27000
+        duration=estimated_duration3
+    )
+    # count += 1
+    # # Attempt to collect a block
+    act.A_collectNearestBlock(samplingTime=1000)
+
+    act.A_stopMotion(robot)
+
+    calibrated_speed7, estimated_duration7 = act.A_calibrateRobot(
+        robot, 
+        speed=0.5, 
+        durations=(1000, 2000, 3000), 
+        targetDistance=blockInfo7["distance"])
+    print(f"total_time7: {estimated_duration7} ms")
+
+    act.A_moveForward(
+        speed=0.5,
+        duration=estimated_duration3
     )
 
-    # act.A_turnRight(
-    #     speed=2,
-    #     duration=1000
-    # )
+    act.A_turnLeft(
+        speed=0.5,
+        duration=1000
+    )
 
-    # act.A_moveForward(
-    #     speed=2,
-    #     duration=3000
-    # )
+    act.A_collectNearestBlock(samplingTime=1000)
 
-    # act.A_turnLeft(
-    #     speed=2,
-    #     duration=1000
-    # )
-
-    # Attempt to collect a block
-    # act.A_collectNearestBlock(samplingTime=1000)
     act.A_stopMotion(robot)
     act.A_stopExecution()
-
+    # print(f"Cycle {count} completed.")
