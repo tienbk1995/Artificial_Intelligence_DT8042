@@ -10,7 +10,7 @@ def getSensorReading(sensor):
     def getObstacleDist(sensorHandler_):
         # Get raw sensor readings using API
         rawSR = vrep.simxReadProximitySensor(robot.clientID, sensorHandler_, vrep.simx_opmode_oneshot_wait)
-        #print(rawSR)
+        # print(rawSR)
         # Calculate Euclidean distance
         if rawSR[1]: # if true, obstacle is within detection range, return distance to obstacle
             return math.sqrt(rawSR[2][0]*rawSR[2][0] + rawSR[2][1]*rawSR[2][1] + rawSR[2][2]*rawSR[2][2])

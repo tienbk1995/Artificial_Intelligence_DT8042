@@ -19,7 +19,6 @@ print(sorted(robot.keys()))
 blockInfo3 = act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
 blockInfo7 = act.A_calibrateBlockDistance(robot, "ConcretBlock#7")
 
-count = 0
 while robot: # main Control loop
 
     simulationTime = World.getSimulationTime()
@@ -35,8 +34,7 @@ while robot: # main Control loop
         speed=0.5,
         duration=estimated_duration3
     )
-    # count += 1
-    # # Attempt to collect a block
+    # Attempt to collect a block
     act.A_collectNearestBlock(samplingTime=1000)
 
     act.A_stopMotion(robot)

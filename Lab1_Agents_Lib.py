@@ -14,7 +14,7 @@ def A_UltraSensing(interval, realtime):
     ultraSonicSensorLeft = World.getSensorReading("ultraSonicSensorLeft")
     ultraSonicSensorRight = World.getSensorReading("ultraSonicSensorRight")
     if realtime % interval == 0:
-        print ('Time:',realtime,\
+        print ('Ultra Sonic Sensor Reading - Time:',realtime,\
                'ultraSonicSensorLeft:',ultraSonicSensorLeft,\
                "ultraSonicSensorRight:", ultraSonicSensorRight)
     return {"ultraLeft": ultraSonicSensorLeft, "ultraRight": ultraSonicSensorRight}
@@ -22,7 +22,7 @@ def A_UltraSensing(interval, realtime):
 def A_EngergySensing(interval, realtime):
     data = World.getSensorReading("energySensor")
     if realtime % interval == 0 or realtime == 0:
-        print ('Time:',realtime,\
+        print ('Energy Sensor Reading - Time:',realtime,\
                'distance:',data.distance, 'direction:', data.direction)
     return {"distance": data.distance, "direction": data.direction}
 
@@ -254,3 +254,15 @@ def A_calibrateBlockDistance(robot, blockHandle, gridSize=0.5):
         "distance": distance,
         "blockPosition": blockPos
     }
+
+def A_collectSpecificBlock(robot, blockIndex):
+    blockHandle,blockName,distance,direction = World.findEnergyBlocks()[0]
+    print("Ignored current nearest block since time-out:", blockName)
+    blockHandle,blockName,distance,direction = World.findEnergyBlocks()[blockIndex]
+    if distance <= 0.5:
+        vrep.simxSetObjectPosition(robot.clientID, blockHandle, -1, [1000,1000,-2], vrep.simx_opmode_oneshot)
+        World.blockHandleArray[blockName][-1] = [1000,1000,-2]
+        print("Energy collected from block:", blockName)
+        return blockName
+    print("No blocks nearby to collect from block")
+    return blockName
