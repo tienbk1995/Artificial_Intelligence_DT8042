@@ -39,7 +39,7 @@ while robot: # main Control loop
     act.A_spin(speed=2, duration=5000, clockTime=-1, startTime=31000)
     print ("... got dizzy, stopping!")
     # print ("BTW, nearest energy block is at:",World.getSensorReading("energySensor"))
-    act.A_stopMotion()
+    act.A_stopMotion(robot)
     ########################################
     # Action Phase: Assign speed to wheels #
     ########################################
