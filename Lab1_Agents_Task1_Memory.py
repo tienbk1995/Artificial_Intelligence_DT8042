@@ -31,10 +31,16 @@ alternativeActions = [
     ("spin", ["ultraLeft", "ultraRight"], ["spin"]),
     ("backward", ["ultraLeft", "ultraRight"], ["backward"])
 ]
+def getCurrentClosestBlockIndex():
+    blockInfo = act.A_EngergySensing(1000, World.getSimulationTime())
+    blockHandle, blockId, distance, direction = World.findEnergyBlocks()[0]
+    return blockId
 
 collectedBlocklst = []
-currentBlockIndex = 0
 targetStartTime = World.getSimulationTime()
+# currentBlockIndex = getCurrentClosestBlockIndex()
+currentBlockIndex = 0
+
 
 memory = {
     "obstacleHistory": [],
@@ -132,8 +138,6 @@ def navigation(robot=robot):
         else:
             runAndRemObstacleHistory(robot, ["ultraRight"], ["turnLeft"])
 
-
-
 def findBlock(collecting_pf=False):
     if (blockInfo["distance"] < COLLECTION_DISTANCE): # Block is close enough to collect
         act.A_stopMotion(robot)
@@ -169,15 +173,13 @@ while robot:
         print("Target timeout! Switching to next block.")
 
         # Get nearest block information
-        blockInfo = act.A_EngergySensing(1000, simulationTime)
-
-        currBlockHandle,currBlockName,currDistance,currDirection = World.findEnergyBlocks()[0]
+        currentClosestBlockIndex = getCurrentClosestBlockIndex()
 
         # Try to collect the nearest block
         if findBlock(
             lambda: act.A_collectNearestBlock(samplingTime=100)
         ) is True:
-            collectedBlocklst.append(currBlockName)
+            collectedBlocklst.append(currentClosestBlockIndex)
             print("Nearest block collected!")
 
 
