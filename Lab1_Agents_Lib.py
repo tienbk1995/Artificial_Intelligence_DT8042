@@ -26,12 +26,15 @@ def A_EngergySensing(interval, realtime):
                'distance:',data.distance, 'direction:', data.direction)
     return {"distance": data.distance, "direction": data.direction}
 
-def A_EngergySensingSpecificBlock(interval, realtime, blockIndex):
-    blockHandle,blockName,distance,direction = World.findEnergyBlocks()[blockIndex]
-    if realtime % interval == 0 or realtime == 0:
-        print ('Energy Sensor Reading - Time:',realtime,\
-               'distance:',distance, 'direction:', direction)
-    return {"distance": distance, "direction": direction}
+def A_EngergySensingSpecificBlock(blockIndex):
+    blocks = World.findEnergyBlocks()
+
+    for blockHandle, blockName, distance, direction in blocks:
+        if blockName == blockIndex:
+            print ('Energy Sensor Reading, Block Index:', blockIndex, 'distance:',distance, 'direction:', direction)
+            return {"distance": distance, "direction": direction}
+        
+    return {"distance": float('inf'), "direction": 0}  # Return default values if block not found
 
 def A_moveForward(speed=1, duration=5000, clockTime=-1, startTime=1000):
     while (World.getSimulationTime() < startTime):

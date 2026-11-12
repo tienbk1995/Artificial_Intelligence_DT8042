@@ -21,7 +21,7 @@ SPEED_LIMIT = 2.0
 DURATION_LIMIT = 500
 OBSTACLE_THRESHOLD = 0.3
 COLLECTION_DISTANCE = 0.5
-TIME_OUT = 100000
+TIME_OUT = 200000
 MAX_BLOCKS_NUMBER = 12
 AVOID_DISTANCE = 0.5  # metres
 
@@ -158,9 +158,8 @@ while robot:
 
     obstacle = act.A_UltraSensing(1000, simulationTime)
 
-    blockInfo = act.A_EngergySensingSpecificBlock(
-        1000, simulationTime, currentBlockIndex
-    )
+    blockInfo = act.A_EngergySensingSpecificBlock(currentBlockIndex)
+    
     print (f"Current block info: {blockInfo}")
 
     print (f"Current pursuing block index: {currentBlockIndex}")
