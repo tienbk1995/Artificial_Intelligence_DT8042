@@ -38,8 +38,8 @@ def getCurrentClosestBlockIndex():
 
 collectedBlocklst = []
 targetStartTime = World.getSimulationTime()
-# currentBlockIndex = getCurrentClosestBlockIndex()
-currentBlockIndex = 0
+currentBlockIndex = getCurrentClosestBlockIndex()
+# currentBlockIndex = 0
 
 
 memory = {
@@ -158,9 +158,10 @@ while robot:
 
     obstacle = act.A_UltraSensing(1000, simulationTime)
 
-    blockInfo = act.A_EngergySensingSpecifcBlock(
+    blockInfo = act.A_EngergySensingSpecificBlock(
         1000, simulationTime, currentBlockIndex
     )
+    print (f"Current block info: {blockInfo}")
 
     print (f"Current pursuing block index: {currentBlockIndex}")
 

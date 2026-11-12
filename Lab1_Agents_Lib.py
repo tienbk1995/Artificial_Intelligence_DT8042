@@ -26,7 +26,7 @@ def A_EngergySensing(interval, realtime):
                'distance:',data.distance, 'direction:', data.direction)
     return {"distance": data.distance, "direction": data.direction}
 
-def A_EngergySensingSpecifcBlock(interval, realtime, blockIndex):
+def A_EngergySensingSpecificBlock(interval, realtime, blockIndex):
     blockHandle,blockName,distance,direction = World.findEnergyBlocks()[blockIndex]
     if realtime % interval == 0 or realtime == 0:
         print ('Energy Sensor Reading - Time:',realtime,\
