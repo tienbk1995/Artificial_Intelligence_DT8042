@@ -137,7 +137,7 @@ def navigation(robot=robot):
 def findBlock(collecting_pf=False):
     if (blockInfo["distance"] < COLLECTION_DISTANCE): # Block is close enough to collect
         act.A_stopMotion(robot)
-        collecting_pf()    
+        return collecting_pf()
     elif (blockInfo["direction"] < 0): # Block is to the left
         act.A_turnLeft(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
     elif (blockInfo["direction"] > 0): # Block is to the right
@@ -146,6 +146,7 @@ def findBlock(collecting_pf=False):
         act.A_moveForward(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
     else: # No specific action needed
         act.A_moveForward(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
+    return False
 
 while robot: # main Control loop
 
@@ -160,7 +161,9 @@ while robot: # main Control loop
     navigation(robot)
 
     if elapsedTime < TIME_OUT:
-        findBlock(act.A_collectNearestBlock)
+        if findBlock(lambda: act.A_collectNearestBlock(samplingTime=100)) is True:
+            # Reset timer for the next target
+            targetStartTime = World.getSimulationTime()
 
     else:
         print("Target timeout! Switching to next block.")
@@ -172,14 +175,13 @@ while robot: # main Control loop
 
         print(f"Switching to block index: {currentBlockIndex}")
 
-        # Reset timer for the next target
-        targetStartTime = World.getSimulationTime()
-
-        findBlock(
+        if findBlock(
             lambda: act.A_collectSpecificBlock(
                 robot, currentBlockIndex
             )
-        )
+        ) is True:
+            # Reset timer for the next target
+            targetStartTime = World.getSimulationTime()
     # time.sleep(0.1)  # Add a small delay to avoid overwhelming the simulation
     print(f"memory: {memory}")
 

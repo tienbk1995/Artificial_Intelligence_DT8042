@@ -266,6 +266,7 @@ def A_collectSpecificBlock(robot, blockIndex):
     if distance <= 0.5:
         vrep.simxSetObjectPosition(robot.clientID, blockHandle, -1, [1000,1000,-2], vrep.simx_opmode_oneshot)
         World.blockHandleArray[blockName][-1] = [1000,1000,-2]
-        print("Energy collected from block:", blockName)    
+        print("Energy collected from block:", blockName)
+        return True
     print("No blocks nearby to collect from block")
-    return blockName
+    return False

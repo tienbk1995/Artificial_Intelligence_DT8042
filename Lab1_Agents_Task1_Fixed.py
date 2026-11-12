@@ -48,16 +48,8 @@ while robot: # main Control loop
 
     act.A_moveForward(
         speed=0.5,
-        duration=estimated_duration3
-    )
-
-    act.A_turnLeft(
-        speed=0.5,
-        duration=1000
+        duration=estimated_duration7
     )
 
     act.A_collectNearestBlock(samplingTime=1000)
-
     act.A_stopMotion(robot)
-    act.A_stopExecution()
-    # print(f"Cycle {count} completed.")
