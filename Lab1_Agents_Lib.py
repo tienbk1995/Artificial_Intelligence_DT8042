@@ -26,6 +26,13 @@ def A_EngergySensing(interval, realtime):
                'distance:',data.distance, 'direction:', data.direction)
     return {"distance": data.distance, "direction": data.direction}
 
+def A_EngergySensingSpecifcBlock(interval, realtime, blockIndex):
+    blockHandle,blockName,distance,direction = World.findEnergyBlocks()[blockIndex]
+    if realtime % interval == 0 or realtime == 0:
+        print ('Energy Sensor Reading - Time:',realtime,\
+               'distance:',distance, 'direction:', direction)
+    return {"distance": distance, "direction": direction}
+
 def A_moveForward(speed=1, duration=5000, clockTime=-1, startTime=1000):
     while (World.getSimulationTime() < startTime):
         time.sleep(0.005) # Wait until the specified start time
@@ -260,13 +267,29 @@ def A_calibrateBlockDistance(robot, blockHandle, gridSize=0.5):
     }
 
 def A_collectSpecificBlock(robot, blockIndex):
+
     blockHandle,blockName,distance,direction = World.findEnergyBlocks()[0]
     print("Ignored current nearest block since time-out:", blockName)
-    blockHandle,blockName,distance,direction = World.findEnergyBlocks()[blockIndex]
-    if distance <= 0.5:
-        vrep.simxSetObjectPosition(robot.clientID, blockHandle, -1, [1000,1000,-2], vrep.simx_opmode_oneshot)
-        World.blockHandleArray[blockName][-1] = [1000,1000,-2]
-        print("Energy collected from block:", blockName)
-        return True
-    print("No blocks nearby to collect from block")
-    return False
+
+    blocks = World.findEnergyBlocks()
+
+    for blockHandle, blockName, distance, direction in blocks:
+
+        if blockName == blockIndex:
+
+            if distance <= 0.5:
+                vrep.simxSetObjectPosition(
+                    robot.clientID,
+                    blockHandle,
+                    -1,
+                    [1000, 1000, -2],
+                    vrep.simx_opmode_oneshot
+                )
+
+                World.blockHandleArray[blockName][-1] = [1000, 1000, -2]
+
+                print("Energy collected from block:", blockName)
+                return True
+
+            print("Block is not close enough:", blockName)
+            return False

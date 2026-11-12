@@ -21,7 +21,7 @@ SPEED_LIMIT = 2.0
 DURATION_LIMIT = 500
 OBSTACLE_THRESHOLD = 0.3
 COLLECTION_DISTANCE = 0.5
-TIME_OUT = 50000
+TIME_OUT = 100000
 MAX_BLOCKS_NUMBER = 12
 AVOID_DISTANCE = 0.5  # metres
 
@@ -32,6 +32,7 @@ alternativeActions = [
     ("backward", ["ultraLeft", "ultraRight"], ["backward"])
 ]
 
+collectedBlocklst = []
 currentBlockIndex = 0
 targetStartTime = World.getSimulationTime()
 
@@ -39,9 +40,9 @@ memory = {
     "obstacleHistory": [],
 }
 
-def rememberObstaclePosition(robot,sensors,actions):
-    blockHandle,blockName,distance,direction = World.findEnergyBlocks()[0]
-    blockName = 'ConcretBlock#'+str(blockName)
+def runAndRemObstacleHistory(robot,sensors,actions):
+    blockHandle,blockId,distance,direction = World.findEnergyBlocks()[0]
+    blockName = 'ConcretBlock#'+str(blockId)
     retcode1, beforePosBlock = act.A_getBlockPositions(robot, blockName)
     retcode2, beforePosRobot = act.A_getCurrRobotPosition(robot)
     startTime = World.getSimulationTime()
@@ -99,8 +100,6 @@ def chooseAlternativeAction():
     return sensors, actions
 
 def navigation(robot=robot):
-
-    retCode, robotPosition = act.A_getCurrRobotPosition(robot)
     
     if (obstacle["ultraLeft"] < OBSTACLE_THRESHOLD or obstacle["ultraRight"] < OBSTACLE_THRESHOLD): 
         # Obstacle ahead detected
@@ -109,9 +108,9 @@ def navigation(robot=robot):
             # Implement alternative strategies here, e.g., changing the path or avoiding certain areas.
             # For now, we can just log this information.
             sensors, actions = chooseAlternativeAction()
-            rememberObstaclePosition(robot, sensors, actions)
+            runAndRemObstacleHistory(robot, sensors, actions)
         else:
-            rememberObstaclePosition(robot, ["ultraLeft", "ultraRight"], ["spin", "backward"])
+            runAndRemObstacleHistory(robot, ["ultraLeft", "ultraRight"], ["spin", "backward"])
         
     elif (obstacle["ultraLeft"] < OBSTACLE_THRESHOLD): # Obstacle on the left detected
         if getFailedActionCount() >= 2:
@@ -119,9 +118,9 @@ def navigation(robot=robot):
             # Implement alternative strategies here, e.g., changing the path or avoiding certain areas.
             # For now, we can just log this information.
             sensors, actions = chooseAlternativeAction()
-            rememberObstaclePosition(robot, sensors, actions)
+            runAndRemObstacleHistory(robot, sensors, actions)
         else:
-            rememberObstaclePosition(robot, ["ultraLeft"], ["turnRight"])
+            runAndRemObstacleHistory(robot, ["ultraLeft"], ["turnRight"])
 
     elif (obstacle["ultraRight"] < OBSTACLE_THRESHOLD): # Obstacle on the right detected
         if getFailedActionCount() >= 2:
@@ -129,9 +128,10 @@ def navigation(robot=robot):
             # Implement alternative strategies here, e.g., changing the path or avoiding certain areas.
             # For now, we can just log this information.
             sensors, actions = chooseAlternativeAction()
-            rememberObstaclePosition(robot, sensors, actions)
+            runAndRemObstacleHistory(robot, sensors, actions)
         else:
-            rememberObstaclePosition(robot, ["ultraRight"], ["turnLeft"])
+            runAndRemObstacleHistory(robot, ["ultraRight"], ["turnLeft"])
+
 
 
 def findBlock(collecting_pf=False):
@@ -148,42 +148,82 @@ def findBlock(collecting_pf=False):
         act.A_moveForward(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
     return False
 
-while robot: # main Control loop
+while robot:
 
     simulationTime = World.getSimulationTime()
 
     obstacle = act.A_UltraSensing(1000, simulationTime)
-    blockInfo = act.A_EngergySensing(1000, simulationTime)
 
-    # Check whether the current target has timed out
+    blockInfo = act.A_EngergySensingSpecifcBlock(
+        1000, simulationTime, currentBlockIndex
+    )
+
+    print (f"Current pursuing block index: {currentBlockIndex}")
+
     elapsedTime = simulationTime - targetStartTime
 
     navigation(robot)
 
-    if elapsedTime < TIME_OUT:
-        if findBlock(lambda: act.A_collectNearestBlock(samplingTime=100)) is True:
-            # Reset timer for the next target
-            targetStartTime = World.getSimulationTime()
+    if elapsedTime >= TIME_OUT: # Target timeout reached, switch to next block
 
-    else:
         print("Target timeout! Switching to next block.")
 
-        if currentBlockIndex < MAX_BLOCKS_NUMBER:
-            currentBlockIndex += 1
-        else:
-            currentBlockIndex = 0
+        # Get nearest block information
+        blockInfo = act.A_EngergySensing(1000, simulationTime)
+
+        currBlockHandle,currBlockName,currDistance,currDirection = World.findEnergyBlocks()[0]
+
+        # Try to collect the nearest block
+        if findBlock(
+            lambda: act.A_collectNearestBlock(samplingTime=100)
+        ) is True:
+            collectedBlocklst.append(currBlockName)
+            print("Nearest block collected!")
+
+
+        availableBlocks = [
+            i for i in range(12)
+            if i not in collectedBlocklst
+            and i != currentBlockIndex
+        ]
+
+        if not availableBlocks:
+            print("No more available blocks!")
+            break
+
+        currentBlockIndex = random.choice(availableBlocks)
+
+        # IMPORTANT: Reset timer immediately
+        targetStartTime = World.getSimulationTime()
 
         print(f"Switching to block index: {currentBlockIndex}")
 
+    else:
+
         if findBlock(
-            lambda: act.A_collectSpecificBlock(
-                robot, currentBlockIndex
-            )
+            lambda: act.A_collectSpecificBlock(robot, currentBlockIndex)
         ) is True:
-            # Reset timer for the next target
+
+            collectedBlocklst.append(currentBlockIndex)
+
+            print("Collected block:", currentBlockIndex)
+
+            availableBlocks = [
+                i for i in range(12)
+                if i not in collectedBlocklst
+            ]
+
+            if not availableBlocks:
+                print("All blocks collected!")
+                break
+
+            currentBlockIndex = random.choice(availableBlocks)
+
             targetStartTime = World.getSimulationTime()
-    # time.sleep(0.1)  # Add a small delay to avoid overwhelming the simulation
-    print(f"memory: {memory}")
+
+            print("Next target:", currentBlockIndex)
+
+    print("Collected blocks:", collectedBlocklst)
 
 
     
