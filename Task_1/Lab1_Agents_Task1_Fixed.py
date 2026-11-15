@@ -16,6 +16,15 @@ robot = World.init()
 # print important parts of the robot
 print(sorted(robot.keys()))
 
+
+# Predefined movement sequence
+actionSequence = [
+    ("forward", 10000),
+    ("turnRight", 500),
+    ("backward", 500),
+    ("turnLeft", 500),
+]
+
 blockInfo3 = act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
 blockInfo7 = act.A_calibrateBlockDistance(robot, "ConcretBlock#7")
 
@@ -23,33 +32,22 @@ while robot: # main Control loop
 
     simulationTime = World.getSimulationTime()
 
-    calibrated_speed3, estimated_duration3 = act.A_calibrateRobot(
-        robot, 
-        speed=0.5, 
-        durations=(1000, 2000, 3000), 
-        targetDistance=blockInfo3["distance"])
-    print(f"total_time3: {estimated_duration3} ms")
+    for action, duration in actionSequence:
 
-    act.A_moveForward(
-        speed=0.5,
-        duration=estimated_duration3
-    )
-    # Attempt to collect a block
-    act.A_collectNearestBlock(samplingTime=1000)
+        if action == "forward":
+            act.A_moveForward(speed=0.5, duration=duration)
 
-    act.A_stopMotion(robot)
+        elif action == "backward":
+            act.A_moveBackward(speed=0.5, duration=duration)
 
-    calibrated_speed7, estimated_duration7 = act.A_calibrateRobot(
-        robot, 
-        speed=0.5, 
-        durations=(1000, 2000, 3000), 
-        targetDistance=blockInfo7["distance"])
-    print(f"total_time7: {estimated_duration7} ms")
+        elif action == "turnLeft":
+            act.A_turnLeft(speed=0.5, duration=duration)
 
-    act.A_moveForward(
-        speed=0.5,
-        duration=estimated_duration7
-    )
+        elif action == "turnRight":
+            act.A_turnRight(speed=0.5, duration=duration)
 
-    act.A_collectNearestBlock(samplingTime=1000)
-    act.A_stopMotion(robot)
+        elif action == "spin":
+            act.A_spin(speed=0.5, duration=duration)
+
+        # Try collecting the nearest block after each movement
+        act.A_collectNearestBlock(samplingTime=1000)
