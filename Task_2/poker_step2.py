@@ -2,7 +2,7 @@
 Task 2 - Step 2: Fixed agent (2b)
 Ye file poker_step1.py ke saath same folder mein honi chahiye.
 """
-from poker_step1 import deal_hand, show, hand_name, evaluate_hand, RandomAgent, MAX_BID
+from Task_2.poker_step1 import deal_hand, show, hand_name, evaluate_hand, RandomAgent, MAX_BID
 
 
 class FixedAgent:

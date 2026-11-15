@@ -1,7 +1,7 @@
-from poker_step1 import evaluate_hand, RandomAgent, MAX_BID
-from poker_step2 import FixedAgent
-from poker_step3 import play_game
-from poker_step4 import run_experiment, summarize
+from Task_2.poker_step1 import evaluate_hand, RandomAgent, MAX_BID
+from Task_2.poker_step2 import FixedAgent
+from Task_2.poker_step3 import play_game
+from Task_2.poker_step4 import run_experiment, summarize
 
 
 class ReflexAgent:

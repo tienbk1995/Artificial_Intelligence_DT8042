@@ -1,6 +1,6 @@
-from poker_step1 import evaluate_hand, MAX_BID
-from poker_step5 import ReflexAgent
-from poker_step4 import run_experiment, summarize
+from Task_2.poker_step1 import evaluate_hand, MAX_BID
+from Task_2.poker_step5 import ReflexAgent
+from Task_2.poker_step4 import run_experiment, summarize
 
 
 class MemoryAgent:

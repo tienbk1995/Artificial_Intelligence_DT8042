@@ -1,7 +1,7 @@
 import statistics
-from poker_step1 import RandomAgent
-from poker_step2 import FixedAgent
-from poker_step3 import play_game
+from Task_2.poker_step1 import RandomAgent
+from Task_2.poker_step2 import FixedAgent
+from Task_2.poker_step3 import play_game
 
 
 def run_experiment(agent1, agent2, n_games=100):

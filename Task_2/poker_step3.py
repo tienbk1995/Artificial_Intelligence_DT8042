@@ -1,5 +1,5 @@
-from poker_step1 import deal_hand, evaluate_hand, show, hand_name, RandomAgent
-from poker_step2 import FixedAgent
+from Task_2.poker_step1 import deal_hand, evaluate_hand, show, hand_name, RandomAgent
+from Task_2.poker_step2 import FixedAgent
 
 HANDS_PER_GAME = 50
 
