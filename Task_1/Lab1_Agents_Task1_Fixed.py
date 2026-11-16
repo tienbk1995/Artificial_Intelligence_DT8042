@@ -20,9 +20,16 @@ print(sorted(robot.keys()))
 # Predefined movement sequence
 actionSequence = [
     ("forward", 10000),
-    ("turnRight", 500),
-    ("backward", 500),
-    ("turnLeft", 500),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("forward", 10000),
+    ("turnLeft", 10000),
 ]
 
 blockInfo3 = act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
@@ -41,13 +48,13 @@ while robot: # main Control loop
             act.A_moveBackward(speed=0.5, duration=duration)
 
         elif action == "turnLeft":
-            act.A_turnLeft(speed=0.5, duration=duration)
+            act.A_turnLeft(speed=1, duration=duration)
 
         elif action == "turnRight":
-            act.A_turnRight(speed=0.5, duration=duration)
+            act.A_turnRight(speed=1, duration=duration)
 
         elif action == "spin":
             act.A_spin(speed=0.5, duration=duration)
 
         # Try collecting the nearest block after each movement
-        act.A_collectNearestBlock(samplingTime=1000)
+        act.A_collectNearestBlock(samplingTime=100)
