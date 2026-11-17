@@ -37,12 +37,12 @@ alternativeActions = [
 def getCurrentClosestBlockIndex():
     blockInfo = act.A_EngergySensing(1000, World.getSimulationTime())
     blockHandle, blockId, distance, direction = World.findEnergyBlocks()[0]
-    return blockId
+    return blockInfo, blockId
 
 # Initialize global variables
 collectedBlocklst = []
 targetStartTime = World.getSimulationTime()
-currentBlockIndex = getCurrentClosestBlockIndex() # Get initial closest block index
+currentBlockInfo, currentBlockIndex = getCurrentClosestBlockIndex() # Get initial closest block index
 # currentBlockIndex = 0
 memory = {
     "obstacleHistory": [],
@@ -158,7 +158,7 @@ def navigation(robot=robot):
             runAndRemObstacleHistory(robot, ["ultraRight"], ["turnLeft"])
 
 # Nagivation function towards the block based on its direction and distance
-def findBlock(collecting_pf=False):
+def findBlock(blockInfo, collecting_pf=False):
     if (blockInfo["distance"] < COLLECTION_DISTANCE): # Block is close enough to collect
         act.A_stopMotion(robot)
         return collecting_pf() #call the collecting function passed as an argument
@@ -181,9 +181,9 @@ while robot:
     obstacle = act.A_UltraSensing(1000, simulationTime)
 
     # Get the current block information based on the current block index
-    blockInfo = act.A_EngergySensingSpecificBlock(currentBlockIndex)
+    currentBlockInfo = act.A_EngergySensingSpecificBlock(currentBlockIndex)
     
-    print (f"Current block info: {blockInfo}")
+    print (f"Current block info: {currentBlockInfo}")
 
     print (f"Current pursuing block index: {currentBlockIndex}")
 
@@ -199,10 +199,11 @@ while robot:
         print("Target timeout! Switching to next block.")
 
         # Get nearest block information
-        currentClosestBlockIndex = getCurrentClosestBlockIndex()
+        currentBlockInfo, currentClosestBlockIndex = getCurrentClosestBlockIndex()
 
         # Try to collect the nearest block
         if findBlock(
+            currentBlockInfo,
             lambda: act.A_collectNearestBlock(samplingTime=100)
         ) is True:
             collectedBlocklst.append(currentClosestBlockIndex)
@@ -232,7 +233,7 @@ while robot:
     else: # Continue pursuing the current block
         # Try to collect the specific block
 
-        if findBlock(
+        if findBlock(currentBlockInfo,
             lambda: act.A_collectSpecificBlock(robot, currentBlockIndex)
         ) is True:
 
