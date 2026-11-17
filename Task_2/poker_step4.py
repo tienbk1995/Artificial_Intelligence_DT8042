@@ -1,12 +1,11 @@
-import statistics
-from Task_2.poker_step1 import RandomAgent
-from Task_2.poker_step2 import FixedAgent
-from Task_2.poker_step3 import play_game
+import statistics #library for calculating mean and standard deviation
+from poker_step1 import RandomAgent
+from poker_step2 import FixedAgent
+from poker_step3 import play_game #
 
 
 def run_experiment(agent1, agent2, n_games=100):
-    """n_games games chalata hai (har game 50 hands).
-    Return: har game ka bankroll difference (agent1 - agent2) ki list"""
+   
     diffs = []
     for _ in range(n_games):
         b1, b2, _hist = play_game(agent1, agent2)
