@@ -147,7 +147,7 @@ def chooseAlternativeAction(ultraLeft=None, ultraRight=None):
         for j in range(len(recoveryActions[i][2])):
             actions.append(recoveryActions[i][2][j])
 
-    print(f'sensors: {sensors}, actions: {actions}')
+    # print(f'sensors: {sensors}, actions: {actions}')
 
     return sensors, actions
 
@@ -245,7 +245,6 @@ while robot:
         availableBlocks = [
             i for i in range(12)
             if i not in collectedBlocklst
-            and i != currentBlockIndex
         ]
 
         # If there are no more available blocks, print a message and break the loop
@@ -253,8 +252,17 @@ while robot:
             print("No more available blocks!")
             break
 
-        # Change the current block index to a random available block
-        currentBlockIndex = random.choice(availableBlocks)
+        # Exclude the current target only if another target exists
+        otherBlocks = [
+            i for i in availableBlocks
+            if i != currentBlockIndex
+        ]
+
+        if otherBlocks:
+            currentBlockIndex = random.choice(otherBlocks)
+        else:
+            # Only the current target remains
+            print(f"Only block {currentBlockIndex} remains. Continuing pursuit.")
 
         # Reset timer immediately
         targetStartTime = World.getSimulationTime()
