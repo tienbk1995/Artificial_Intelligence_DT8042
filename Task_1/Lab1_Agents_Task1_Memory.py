@@ -113,10 +113,42 @@ def getFailedActionCount():
 
 # choose an alternative action based on the robot's memory and current situation
 # actions are chosen randomly from the predefined alternativeActions list
-def chooseAlternativeAction():
-    selectedAction = random.choice(alternativeActions)
-    sensors = selectedAction[1]
-    actions = selectedAction[2]
+def chooseAlternativeAction(ultraLeft=None, ultraRight=None):
+    if ultraLeft < OBSTACLE_THRESHOLD and ultraRight < OBSTACLE_THRESHOLD:
+        # Both sides have obstacles, choose an action that avoids both
+        recoveryActions = [
+            ("spin", ["ultraLeft", "ultraRight"], ["spin"]),
+            ("backward", ["ultraLeft", "ultraRight"], ["backward"])
+        ]
+    elif ultraLeft < OBSTACLE_THRESHOLD:
+        # Obstacle on the left, choose an action that avoids the left side
+        recoveryActions = [
+            ("turnRight", ["ultraLeft"], ["turnRight"]),
+            ("spin", ["ultraLeft"], ["spin"])
+        ]
+    elif ultraRight < OBSTACLE_THRESHOLD:
+        # Obstacle on the right, choose an action that avoids the right side
+        recoveryActions = [
+            ("turnLeft", ["ultraRight"], ["turnLeft"]),
+            ("spin", ["ultraRight"], ["spin"])
+        ]
+    else:
+        # No obstacles detected, choose any action
+        recoveryActions = random.choice(alternativeActions)
+
+    sensors = []
+    actions = []
+
+    for i in range(len(recoveryActions)):
+        for j in range(len(recoveryActions[i][1])):
+            sensors.append(recoveryActions[i][1][j])
+
+    for i in range(len(recoveryActions)):
+        for j in range(len(recoveryActions[i][2])):
+            actions.append(recoveryActions[i][2][j])
+
+    print(f'sensors: {sensors}, actions: {actions}')
+
     return sensors, actions
 
 # Navigation function to handle obstacle avoidance based on sensor readings and robot's memory
@@ -127,7 +159,7 @@ def navigation(robot=robot):
         if getFailedActionCount() >= 2:
             print("Recent actions have been unsuccessful. Considering alternative strategies.")
             # Implement alternative strategies here by choosing an alternative action based on the robot's memory and current situation
-            sensors, actions = chooseAlternativeAction()
+            sensors, actions = chooseAlternativeAction(ultraLeft=obstacle["ultraLeft"], ultraRight=obstacle["ultraRight"])
             # Execute the alternative action and remember the outcome
             runAndRemObstacleHistory(robot, sensors, actions)
         else:
@@ -138,7 +170,7 @@ def navigation(robot=robot):
         if getFailedActionCount() >= 2:
             print("Recent actions have been unsuccessful. Considering alternative strategies.")
             # Implement alternative strategies here by choosing an alternative action based on the robot's memory and current situation
-            sensors, actions = chooseAlternativeAction()
+            sensors, actions = chooseAlternativeAction(ultraLeft=obstacle["ultraLeft"], ultraRight=obstacle["ultraRight"])
             # Execute the alternative action and remember the outcome
             runAndRemObstacleHistory(robot, sensors, actions)
         else:
@@ -150,7 +182,7 @@ def navigation(robot=robot):
             print("Recent actions have been unsuccessful. Considering alternative strategies.")
             # Implement alternative strategies here, e.g., changing the path or avoiding certain areas.
             # For now, we can just log this information.
-            sensors, actions = chooseAlternativeAction()
+            sensors, actions = chooseAlternativeAction(ultraLeft=obstacle["ultraLeft"], ultraRight=obstacle["ultraRight"])
             # Execute the alternative action and remember the outcome
             runAndRemObstacleHistory(robot, sensors, actions)
         else:
