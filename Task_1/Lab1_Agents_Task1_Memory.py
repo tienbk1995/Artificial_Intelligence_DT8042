@@ -43,7 +43,6 @@ def getCurrentClosestBlockIndex():
 collectedBlocklst = []
 targetStartTime = World.getSimulationTime()
 currentBlockInfo, currentBlockIndex = getCurrentClosestBlockIndex() # Get initial closest block index
-# currentBlockIndex = 0
 memory = {
     "obstacleHistory": [],
 }
@@ -112,7 +111,6 @@ def getFailedActionCount():
     )
 
 # choose an alternative action based on the robot's memory and current situation
-# actions are chosen randomly from the predefined alternativeActions list
 def chooseAlternativeAction(ultraLeft=None, ultraRight=None):
     if ultraLeft < OBSTACLE_THRESHOLD and ultraRight < OBSTACLE_THRESHOLD:
         # Both sides have obstacles, choose an action that avoids both
@@ -146,8 +144,6 @@ def chooseAlternativeAction(ultraLeft=None, ultraRight=None):
     for i in range(len(recoveryActions)):
         for j in range(len(recoveryActions[i][2])):
             actions.append(recoveryActions[i][2][j])
-
-    # print(f'sensors: {sensors}, actions: {actions}')
 
     return sensors, actions
 
@@ -233,7 +229,7 @@ while robot:
         # Get nearest block information
         currentBlockInfo, currentClosestBlockIndex = getCurrentClosestBlockIndex()
 
-        # Try to collect the nearest block
+        # Try to collect the nearest block on the way to the next target block
         if findBlock(
             currentBlockInfo,
             lambda: act.A_collectNearestBlock(samplingTime=100)
@@ -249,7 +245,7 @@ while robot:
 
         # If there are no more available blocks, print a message and break the loop
         if not availableBlocks:
-            print("No more available blocks!")
+            print("No more available blocks, stop robot completely!")
             break
 
         # Exclude the current target only if another target exists
@@ -259,7 +255,10 @@ while robot:
         ]
 
         if otherBlocks:
-            currentBlockIndex = random.choice(otherBlocks)
+            # Get nearest block information as the next target block
+            currentBlockInfo, currentClosestBlockIndex = getCurrentClosestBlockIndex()
+            # Update the current block index to the closest block index
+            currentBlockIndex = currentClosestBlockIndex
         else:
             # Only the current target remains
             print(f"Only block {currentBlockIndex} remains. Continuing pursuit.")
@@ -289,16 +288,16 @@ while robot:
 
             # If there are no more available blocks, print a message and break the loop
             if not availableBlocks:
-                print("All blocks collected!")
+                print("All blocks collected, stop robot completely!")
                 break
 
-            # Change the current block index to a random available block
-            currentBlockIndex = random.choice(availableBlocks)
+            # Change target to the nearest block information
+            currentBlockInfo, currentBlockIndex = getCurrentClosestBlockIndex()
 
             # Reset timer immediately
             targetStartTime = World.getSimulationTime()
 
-            print("Next target:", currentBlockIndex)
+            print("Next target:", currentBlockIndex)            
 
     print("Collected blocks:", collectedBlocklst)
 
