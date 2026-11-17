@@ -16,45 +16,47 @@ robot = World.init()
 # print important parts of the robot
 print(sorted(robot.keys()))
 
+STEP_DURATION = 500
 
 # Predefined movement sequence
 actionSequence = [
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("forward", 10000),
-    ("turnLeft", 10000),
+    # Right side: move upward
+    ("forward", 32000),
+    ("turnLeft", 2100),
+
+    # Top side: move left
+    ("turnLeft", 2000),
+    ("forward", 30000),
+
 ]
 
-blockInfo3 = act.A_calibrateBlockDistance(robot, "ConcretBlock#3")
-blockInfo7 = act.A_calibrateBlockDistance(robot, "ConcretBlock#7")
+def executeFixedActionSequence(action, duration):
+
+    remaining = duration
+
+    while remaining > 0:
+
+        step = min(STEP_DURATION, remaining)
+
+        if action == "forward":
+            act.A_moveForward(speed=0.5, duration=step)
+
+        elif action == "backward":
+            act.A_moveBackward(speed=0.5, duration=step)
+
+        elif action == "turnLeft":
+            act.A_turnLeft(speed=1, duration=step)
+
+        elif action == "turnRight":
+            act.A_turnRight(speed=1, duration=step)
+
+        remaining -= step
+
+        if act.A_collectNearestBlock(samplingTime=100):
+            print("Block collected!")
+
 
 while robot: # main Control loop
 
-    simulationTime = World.getSimulationTime()
-
     for action, duration in actionSequence:
-
-        if action == "forward":
-            act.A_moveForward(speed=0.5, duration=duration)
-
-        elif action == "backward":
-            act.A_moveBackward(speed=0.5, duration=duration)
-
-        elif action == "turnLeft":
-            act.A_turnLeft(speed=1, duration=duration)
-
-        elif action == "turnRight":
-            act.A_turnRight(speed=1, duration=duration)
-
-        elif action == "spin":
-            act.A_spin(speed=0.5, duration=duration)
-
-        # Try collecting the nearest block after each movement
-        act.A_collectNearestBlock(samplingTime=100)
+        executeFixedActionSequence(action, duration)
