@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage[left=3cm, right=3cm, top=2cm]{geometry}
+
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{tcolorbox}
+\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+\usepackage[obeyspaces]{url}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows}
+%\setcounter{section}{-1}
+
+\title{Artificial Intelligence Laboratory 1: Agents \\ DT8042 HT22, Halmstad University}
+\author{Firstname Lastname,  \{firstname.lastname\}@hh.se, \{program you registered to\}}
+\date{November 2026}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+The objective of this lab is to ...
+
+\begin{tcolorbox}
+\textbf{Q1}: What type of agents have you implemented in this lab, and in which two application domains?
+\end{tcolorbox}
+
+\section*{Task 1: Mobile robot exploration}
+
+For tasks 1a - 1d...
+
+\begin{tcolorbox}
+\textbf{Q2}: Briefly explain each agent you have implemented for the mobile robot exploration task. Using diagrams/plots if necessary.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q3}: Propose two additional performance measures and compare the performance of all four agents implemented. 
+\end{tcolorbox}
+
+
+\begin{table}[h]
+\vspace{1cm}
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+ Agent & Measure 1 & Measure 2  & Measure 3 \\
+ Types & \#blocks collected & ... & ... \\\midrule
+Random & e.g. 7 & ... & ...  \\
+Fixed & ... & ... & ... \\
+Reflex & ... & ... & ...  \\
+Memory & ... & ... & ...   \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Performance comparison}
+\label{tab:comparison}
+\end{table}
+
+\section*{Bonus tasks - Mobile Robot}
+
+\begin{tcolorbox}
+\textbf{Q8}: (Bonus) Explain the memory agent you have implemented. Have your poker agent with memory play against the agent in 2e (reflex agent).  
+        
+        \begin{enumerate}
+            \item Is the memory agent performing better? why/ why not?
+            \item what could be done to improve it?
+        \end{enumerate}
+\end{tcolorbox}
+
+\section*{Task 2: Poker game agent}
+
+\begin{tcolorbox}
+\textbf{Q4}: Explain agents implemented for the poker application (task 2a, 2b, 2e).
+\end{tcolorbox}
+
+
+\begin{tcolorbox}
+\textbf{Q5}: Analyse the result of the game with a random agent vs. a fixed agent. Which agent is better? Why?
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q6}: Does the implemented reflex agent make better decisions based on the strength of its hand?
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q7}: To empirically back your analysis, provide the mean and standard deviation of the bankroll difference at the end of the game for 100 games (50-hands per game), compare all agents in the table below.
+\end{tcolorbox}
+
+\begin{table}[h]
+\vspace{1cm}
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+ Agent vs. & Random & Fixed  & Reflex \\ \midrule
+Random & 0 &  e.g. 10 ± 42 & ...   \\
+Fixed & & 0 & ... \\
+Reflex &  &  & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Performance comparison (on amount of coins won)}
+\label{tab:comparison}
+\end{table}
+
+
+\section*{Bonus tasks - Poker Game}
+
+\begin{tcolorbox}
+\textbf{Q8}: (Bonus) Explain the memory agent you have implemented. Have your poker agent with memory play against the agent in 2e (reflex agent).  
+        
+        \begin{enumerate}
+            \item Is the memory agent performing better? why/ why not?
+            \item what could be done to improve it?
+        \end{enumerate}
+\end{tcolorbox}
+
+\section*{Contributions}
+
+Please describe your individual contributions to the work.
+
+\section*{Conclusion}
+
+Add some reflections/conclusions about the lab.
+
+
+\end{document}
