@@ -200,6 +200,9 @@ def findBlock(blockInfo, collecting_pf=False):
         act.A_moveForward(speed=SPEED_LIMIT, duration=DURATION_LIMIT, clockTime=-1, startTime=0)
     return False
 
+# Start the timer for the robot's operation
+robotStartTime = time.time()
+
 # Main control loop for the robot's operation
 while robot:
     # Get the current simulation time
@@ -300,6 +303,10 @@ while robot:
             print("Next target:", currentBlockIndex)            
 
     print("Collected blocks:", collectedBlocklst)
+# End of the robot collection loop
+robotEndTime = time.time()
+print(f"Total time taken: {robotEndTime - robotStartTime:.2f} seconds")
+
 
 
     
