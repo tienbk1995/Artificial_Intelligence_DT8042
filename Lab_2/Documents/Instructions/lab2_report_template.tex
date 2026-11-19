@@ -1,0 +1,144 @@
+\documentclass{article}
+\usepackage[left=3cm, right=3cm, top=2cm]{geometry}
+
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage[obeyspaces]{url}
+\usepackage{tabularx,array}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows}
+
+\title{Artificial Intelligence Laboratory 2: A* Search Algorithm \\ DT8042 HT26, Halmstad University}
+\author{Firstname Lastname, \{firstname.lastname\}@hh.se, \{programme\}}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+The objective of this lab is to ...
+
+\begin{tcolorbox}
+\textbf{Q1}: What search algorithms have you learned from the lectures?
+Briefly introduce them here.
+\end{tcolorbox}
+
+\section*{Task 1: Path Planning}
+For Task 1 ...
+
+\begin{tcolorbox}
+\textbf{Q2}: Present your results for Random Search, BFS, and DFS on both map
+types. Do they find optimal paths? How many nodes are expanded? Include
+representative plots of the paths and the diagnostic values requested in the
+lab description.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q3}: Present your results for Greedy Search and A*. Which heuristics
+have you implemented, including the custom heuristic for the rotated-H map?
+Do the methods find optimal paths? Explain your observations with examples.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q4}: Compare the algorithms over repeated trials (for example, 20)
+and complete Table~\ref{tab:path-comparison}. State the map settings and number
+of trials. Present results for the two map types separately, and add rows for
+the heuristic variants already tested in the lab.
+\end{tcolorbox}
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{Y C{1.9cm} C{1.8cm} C{2.1cm} C{2cm}}
+\toprule
+Search algorithm & Nodes expanded & Path length (moves) & Time (s) & Optimal runs \\
+\midrule
+Random & \ldots & \ldots & \ldots & \ldots \\
+BFS & \ldots & \ldots & \ldots & \ldots \\
+DFS & \ldots & \ldots & \ldots & \ldots \\
+Greedy & \ldots & \ldots & \ldots & \ldots \\
+A* & \ldots & \ldots & \ldots & \ldots \\
+\ldots & \ldots & \ldots & \ldots & \ldots \\
+\bottomrule
+\end{tabularx}
+\caption{Performance comparison (Path Planning): [map type and settings].}
+\label{tab:path-comparison}
+\end{table}
+
+Report repeated measurements as mean $\pm$ standard deviation. Path length
+is the number of moves; average it over successful runs only. ``Optimal runs''
+is the number of runs returning a shortest path, out of the solvable trials.
+State failures separately. Time refers to the search, excluding plotting and
+map generation.
+
+\section*{Task 2: Poker Bidding}
+
+\begin{tcolorbox}
+\textbf{Q5}: Implement and apply BFS and DFS (and, optionally, Greedy Search).
+What have you observed? Did each algorithm find a successful solution? How many
+nodes were expanded?
+
+\medskip
+\textit{Task 2a:} What is the total number of states before the
+fifth hand?
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q6} \textit{(Task 2c)}: Briefly describe your evaluation
+function. How many nodes were expanded using it? Is the solution optimal?
+If discussing optimality, state the criterion used.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Q7}: Compare BFS and DFS using Table~\ref{tab:poker-comparison} and
+discuss the results. Include heuristic-search methods only if you completed
+Task 2c.
+\end{tcolorbox}
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{Y C{1.5cm} C{2.3cm} C{2.3cm} C{2.1cm}}
+\toprule
+Search algorithm & Success? & Nodes expanded & Completed hands & Total bets \\
+\midrule
+BFS & \ldots & \ldots & \ldots & \ldots \\
+DFS & \ldots & \ldots & \ldots & \ldots \\
+\ldots & \ldots & \ldots & \ldots & \ldots \\
+\bottomrule
+\end{tabularx}
+\caption{Performance comparison (Poker Bidding).}
+\label{tab:poker-comparison}
+\end{table}
+
+Success is Yes/No according to the lab's winning objective.
+Expanded nodes refer to the search. Hands and bets refer to the returned
+successful sequence; use a dash if none is found. Total bets counts betting
+actions by both players across all hands in that sequence, excluding calls
+and folds. The supplied bidding counter resets after each hand.
+
+\section*{Contribution}
+Explain who worked on which parts.
+
+\section*{Conclusion}
+Add your reflections and conclusions about the lab.
+
+\end{document}
