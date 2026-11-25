@@ -193,43 +193,43 @@ def plotMap(map2d_, path_, title_ ='', *, vmin=None, vmax=None,
     plt.show()
 
 
+def example():
+    # create a map with obstacles randomly distributed
+    #  0 - Free cell
+    # -1 - Obstacle
+    # -2 - Start point
+    # -3 - Goal point
+    _map_ = generateMap2d([60, 60])
+    plt.clf()
+    plt.imshow(_map_)
+    plt.show()
 
-# create a map with obstacles randomly distributed
-#  0 - Free cell
-# -1 - Obstacle
-# -2 - Start point
-# -3 - Goal point
-_map_ = generateMap2d([60, 60])
-plt.clf()
-plt.imshow(_map_)
-plt.show()
+    # map with rotated-H shape obstacle and obstacles randomly distributed
+    map_h_object, info = generateMap2d_obstacle([60, 60])
 
-# map with rotated-H shape obstacle and obstacles randomly distributed
-map_h_object, info = generateMap2d_obstacle([60, 60])
+    # environment information
+    print("map info: ")
+    print("y top: ", info[0])
+    print("t bot: ", info[1])
+    print("x wall: ", info[2])
 
-# environment information
-print("map info: ")
-print("y top: ", info[0])
-print("t bot: ", info[1])
-print("x wall: ", info[2])
-
-plt.clf()
-plt.imshow(map_h_object)
-plt.show()
+    plt.clf()
+    plt.imshow(map_h_object)
+    plt.show()
 
 
-# example for a solved_map
-#  0 - unexpanded cell
-# -1 - obstacle
-# -2 - start point
-# -3 - goal point
-# positive_numbers - one type of the values described in lab2 description (heuristic cost, travel cost, cell total cost,...)
+    # example for a solved_map
+    #  0 - unexpanded cell
+    # -1 - obstacle
+    # -2 - start point
+    # -3 - goal point
+    # positive_numbers - one type of the values described in lab2 description (heuristic cost, travel cost, cell total cost,...)
 
-example_solved_map = map_h_object
-example_solved_path = np.array([[xx, xx*2] if xx % 2 == 0 else [xx, xx+1] for xx in range(20)])
+    example_solved_map = map_h_object
+    example_solved_path = np.array([[xx, xx*2] if xx % 2 == 0 else [xx, xx+1] for xx in range(20)])
 
-print("path", example_solved_path)
+    print("path", example_solved_path)
 
-plotMap(example_solved_map, example_solved_path)
+    plotMap(example_solved_map, example_solved_path)
 
 
