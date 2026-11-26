@@ -19,54 +19,16 @@ Returns:
                                             -3: Goal point;
 '''
 # helper
-def get_neighbors(current):
+def get_neighbors(map, current):
     current_x, current_y = current
-    if current_y == 0 and current_x == 0:
-        up_curr_node = None
-        down_curr_node = (current_x+1, current_y)
-        left_curr_node = None
-        right_curr_node = (current_x, current_y+1)
-    elif current_y == 0 and current_x == 59:
-        up_curr_node = (current_x-1, current_y)
-        down_curr_node = None
-        left_curr_node = None
-        right_curr_node = (current_x, current_y+1)
-    elif current_y == 59 and current_x == 0:
-        up_curr_node = None
-        down_curr_node = (current_x+1, current_y)
-        left_curr_node = (current_x, current_y-1)
-        right_curr_node = None
-    elif current_y == 59 and current_x == 59:
-        up_curr_node = (current_x-1, current_y)
-        down_curr_node = None
-        left_curr_node = (current_x, current_y-1)
-        right_curr_node = None
-    elif current_y == 0:
-        up_curr_node = (current_x-1, current_y)
-        down_curr_node = (current_x+1, current_y)
-        left_curr_node = None
-        right_curr_node = (current_x, current_y+1)
-    elif current_y == 59:
-        up_curr_node = (current_x-1, current_y)
-        down_curr_node = (current_x+1, current_y)
-        left_curr_node = (current_x, current_y-1)
-        right_curr_node = None
-    elif current_x == 0:
-        up_curr_node = None
-        down_curr_node = (current_x+1, current_y)
-        left_curr_node = (current_x, current_y-1)
-        right_curr_node = (current_x, current_y+1)
-    elif current_x == 59:
-        up_curr_node = (current_x-1, current_y)
-        down_curr_node = None
-        left_curr_node = (current_x, current_y-1)
-        right_curr_node = (current_x, current_y+1)
-    else:
-        up_curr_node = (current_x-1, current_y)
-        down_curr_node = (current_x+1, current_y)
-        left_curr_node = (current_x, current_y-1)
-        right_curr_node = (current_x, current_y+1)
-    return [up_curr_node, down_curr_node, left_curr_node, right_curr_node]
+    rows, cols = map.shape
+    neighbors = []
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+    for dx, dy in directions:
+        neighbor_x, neighbor_y = current_x + dx, current_y + dy
+        if 0 <= neighbor_x < rows and 0 <= neighbor_y < cols:
+            neighbors.append((neighbor_x, neighbor_y))
+    return neighbors
 
 def reconstruct_path(came_from, start, goal):
     current = goal
@@ -105,15 +67,15 @@ def random_search(map):
 
         if current == goal:
             path = reconstruct_path(came_from, start, goal)
-            return path, cost[current]
+            return start, goal, path, cost[current]
         
-        for neighbor in get_neighbors(current):
+        for neighbor in get_neighbors(map, current):
             if neighbor is None:
                 continue
 
             neighbor_x, neighbor_y = neighbor
             neighbor_value = map[neighbor_x][neighbor_y]
-
+            # Check if the neighbor is not in explored, not in frontier, and is not an obstacle
             if neighbor not in explored and neighbor not in frontier and neighbor_value != -1:
                 frontier.append(neighbor)
                 came_from[neighbor] = current
