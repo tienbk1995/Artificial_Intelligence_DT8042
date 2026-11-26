@@ -26,7 +26,7 @@ def get_neighbors(map, current):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
     for dx, dy in directions:
         neighbor_x, neighbor_y = current_x + dx, current_y + dy
-        if 0 <= neighbor_x < rows and 0 <= neighbor_y < cols:
+        if 0 <= neighbor_x < rows and 0 <= neighbor_y < cols and map[neighbor_x][neighbor_y] != -1:  # Check if the neighbor is not an obstacle
             neighbors.append((neighbor_x, neighbor_y))
     return neighbors
 
@@ -44,10 +44,7 @@ def reconstruct_path(came_from, start, goal):
     return path
 
 # random search algorithm
-def random_search(map):
-
-    start = (np.where(map == -2)[0][0], np.where(map == -2)[1][0])
-    goal = (np.where(map == -3)[0][0], np.where(map == -3)[1][0])   
+def randomS(map, start, goal):
 
     # cost moving to another cell
     moving_cost = 1
@@ -67,7 +64,7 @@ def random_search(map):
 
         if current == goal:
             path = reconstruct_path(came_from, start, goal)
-            return start, goal, path, cost[current]
+            return path, cost[current]
         
         for neighbor in get_neighbors(map, current):
             if neighbor is None:
@@ -76,7 +73,7 @@ def random_search(map):
             neighbor_x, neighbor_y = neighbor
             neighbor_value = map[neighbor_x][neighbor_y]
             # Check if the neighbor is not in explored, not in frontier, and is not an obstacle
-            if neighbor not in explored and neighbor not in frontier and neighbor_value != -1:
+            if neighbor not in explored and neighbor not in frontier:
                 frontier.append(neighbor)
                 came_from[neighbor] = current
                 cost[neighbor] = cost[current] + moving_cost
