@@ -7,6 +7,7 @@ import unin_random as unin_ran
 import unin_BFS as BFS
 import unin_DFS as DFS
 import in_greedy as greedy
+import in_astar as astar
 import validation as val
 
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     size_x, size_y = random.randint(20, 100), random.randint(20, 100)
     new_map, start_point, goal_point = init_map([size_x, size_y])
 
-    search_func = input("Enter the search function to use (random, BFS, DFS, greedy): ").strip().lower()
+    search_func = input("Enter the search function to use (random, BFS, DFS, greedy, astar): ").strip().lower()
     heuristic_choice = None
 
     match search_func:
@@ -61,4 +62,15 @@ if __name__ == "__main__":
             print("DFS search selected.")
             DFS_path, DFS_cost = formatting(search_pf=lambda: DFS.DFS(map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, DFS_path, start_point, goal_point)
+        case "astar":
+            heuristic_choice = input("Enter the heuristic to use (eucl, manh): ").strip().lower()
+            if heuristic_choice not in ["eucl", "manh"]:
+                print("Invalid heuristic choice. Please choose 'euclidean' or 'manhattan'.")
+                exit(1)
+            elif heuristic_choice == "eucl":
+                astar_path_euclidean, astar_cost_euclidean = formatting(search_pf=lambda: astar.A_star_search(map=new_map, start=start_point, goal=goal_point, heuristic=astar.euclidean_distance))
+                val.validate_path(new_map, astar_path_euclidean, start_point, goal_point)
+            elif heuristic_choice == "manh":
+                astar_path_manhattan, astar_cost_manhattan = formatting(search_pf=lambda: astar.A_star_search(map=new_map, start=start_point, goal=goal_point, heuristic=astar.manhattan_distance))
+                val.validate_path(new_map, astar_path_manhattan, start_point, goal_point)
 
