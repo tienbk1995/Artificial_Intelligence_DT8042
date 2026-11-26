@@ -79,4 +79,4 @@ def DFS(map, start, goal):
 
     path = reconstruct_path(came_from, start, goal)
 
-    return path, cost[current]
+    return path, cost[goal]

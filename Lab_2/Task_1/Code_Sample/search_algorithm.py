@@ -15,7 +15,7 @@ class PriorityQueue:
 
 
 # An example of search algorithm, feel free to modify and implement the missing part
-def search(map, start, goal, ...):
+def search(map, start, goal):
 
     # cost moving to another cell
     moving_cost = 1
