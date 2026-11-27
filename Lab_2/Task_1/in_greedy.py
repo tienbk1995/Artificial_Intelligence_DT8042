@@ -71,10 +71,14 @@ def greedy_search(map, start, goal, heuristic):
     # list of visited nodes
     visited = [start]
 
+    expanded_nodes = 0
+
 
     # if there is still nodes to open
     while not frontier.isEmpty():
         current = frontier.remove()
+
+        expanded_nodes += 1
 
         # check if the goal is reached
         if current == goal:
@@ -104,8 +108,8 @@ def greedy_search(map, start, goal, heuristic):
 
 
     if goal not in came_from:
-        return None, float('inf')  # Return None and infinite cost if the goal is not reachable
+        return None, float('inf'), expanded_nodes  # Return None and infinite cost if the goal is not reachable
     
     path = reconstruct_path(came_from, start, goal)
     
-    return path, cost[goal]
+    return path, cost[goal], expanded_nodes

@@ -57,11 +57,13 @@ def randomS(map, start, goal):
     # current cost
     cost = {start: 0}
 
+    expanded_nodes = 0
+
     while frontier:
         current = random.choice(frontier)
         frontier.remove(current)
         explored.add(current)
-
+        expanded_nodes += 1
         if current == goal:
             break
         
@@ -78,8 +80,8 @@ def randomS(map, start, goal):
                 cost[neighbor] = cost[current] + moving_cost
 
     if goal not in came_from:
-        return None, float('inf')  # Return None and infinite cost if the goal is not reachable
+        return None, float('inf'), expanded_nodes  # Return None and infinite cost if the goal is not reachable
     
     path = reconstruct_path(came_from, start, goal)
     
-    return path, cost[goal]
+    return path, cost[goal], expanded_nodes

@@ -68,10 +68,24 @@ def A_star_search(map, start, goal, heuristic):
     # expanded list with cost value for each cell
     cost = {start: 0}
 
+    expanded_nodes = 0
+
+    closed_set = set()  # To track unique expanded nodes
+
 
     # if there is still nodes to open
     while not frontier.isEmpty():
         current = frontier.remove()
+
+        if current in closed_set:
+            continue  # Skip if the node has already been expanded
+        # This is because the heuristic is consistent, so the first time we expand a node, we have found the optimal path to it.
+        # f(n) = g(n) + h(n), where g(n) is the cost to reach n and h(n) is the heuristic estimate from n to the goal.
+        # h(n) <= h(n') + c(n, n'), where n' is a neighbor of n and c(n, n') is the cost to move from n to n'.
+        # => If we expand a node n, we have found the optimal path to it, and any subsequent paths to n will be longer or equal in cost.
+
+        expanded_nodes += 1
+        closed_set.add(current)
 
         # check if the goal is reached
         if current == goal:
@@ -90,15 +104,14 @@ def A_star_search(map, start, goal, heuristic):
                 neighbor_cost = heuristic(neighbor, goal)
                 priority = new_cost + neighbor_cost  # Total cost = cost to reach neighbor + heuristic
                 frontier.add(neighbor, priority)
-                came_from[neighbor] = current
                 # add to path
                 came_from[neighbor] = current
 
 
 
     if goal not in came_from:
-        return None, float('inf')  # Return None and infinite cost if the goal is not reachable
+        return None, float('inf'), expanded_nodes  # Return None and infinite cost if the goal is not reachable
     
     path = reconstruct_path(came_from, start, goal)
     
-    return path, cost[goal]
+    return path, cost[goal], expanded_nodes

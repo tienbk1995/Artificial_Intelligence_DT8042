@@ -58,9 +58,13 @@ def DFS(map, start, goal):
     # expanded list with cost value for each cell
     cost = {start: 0}
 
+    expanded_nodes = 0
+
     # if there is still nodes to open
     while frontier:
         current = frontier.pop()
+
+        expanded_nodes += 1
 
         # check if the goal is reached
         if current == goal:
@@ -75,8 +79,8 @@ def DFS(map, start, goal):
                 cost[neighbor] = cost[current] + moving_cost
 
     if goal not in came_from:
-        return None, float('inf')  # Return None and infinite cost if the goal is not reachable
+        return None, float('inf'), expanded_nodes  # Return None and infinite cost if the goal is not reachable
 
     path = reconstruct_path(came_from, start, goal)
 
-    return path, cost[goal]
+    return path, cost[goal], expanded_nodes
