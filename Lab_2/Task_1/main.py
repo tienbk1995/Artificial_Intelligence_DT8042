@@ -34,6 +34,14 @@ def formatting(search_pf=False):
         print(f"Step {i}: {position}")
     return (path, cost)
 
+def plot_path(map, path, title_="Path Planning"):
+    # Convert only for visualization
+    plot_path = np.asarray(path)[:, ::-1]
+    pp.plotMap(map, plot_path, title_=title_)
+
+
+    
+
 if __name__ == "__main__":
     size_x, size_y = random.randint(20, 100), random.randint(20, 100)
     new_map, start_point, goal_point = init_map([size_x, size_y])
@@ -50,11 +58,11 @@ if __name__ == "__main__":
             elif heuristic_choice == "eucl":
                 greedy_path_euclidean, greedy_cost_euclidean = formatting(search_pf=lambda: greedy.greedy_search(map=new_map, start=start_point, goal=goal_point, heuristic=greedy.euclidean_distance))
                 val.validate_path(new_map, greedy_path_euclidean, start_point, goal_point)
-                pp.plotMap(new_map, greedy_path_euclidean, title_="Greedy Search with Euclidean Heuristic")
+                plot_path(new_map, greedy_path_euclidean, title_="Greedy Search with Euclidean Heuristic")
             elif heuristic_choice == "manh":
                 greedy_path_manhattan, greedy_cost_manhattan = formatting(search_pf=lambda: greedy.greedy_search(map=new_map, start=start_point, goal=goal_point, heuristic=greedy.manhattan_distance))
                 val.validate_path(new_map, greedy_path_manhattan, start_point, goal_point)
-                pp.plotMap(new_map, greedy_path_manhattan, title_="Greedy Search with Manhattan Heuristic")
+                plot_path(new_map, greedy_path_manhattan, title_="Greedy Search with Manhattan Heuristic")
         case "astar":
             heuristic_choice = input("Enter the heuristic to use (eucl, manh): ").strip().lower()
             if heuristic_choice not in ["eucl", "manh"]:
@@ -63,25 +71,25 @@ if __name__ == "__main__":
             elif heuristic_choice == "eucl":
                 astar_path_euclidean, astar_cost_euclidean = formatting(search_pf=lambda: astar.A_star_search(map=new_map, start=start_point, goal=goal_point, heuristic=astar.euclidean_distance))
                 val.validate_path(new_map, astar_path_euclidean, start_point, goal_point)
-                pp.plotMap(new_map, astar_path_euclidean, title_="A* Search with Euclidean Heuristic")
+                plot_path(new_map, astar_path_euclidean, title_="A* Search with Euclidean Heuristic")
             elif heuristic_choice == "manh":
                 astar_path_manhattan, astar_cost_manhattan = formatting(search_pf=lambda: astar.A_star_search(map=new_map, start=start_point, goal=goal_point, heuristic=astar.manhattan_distance))
                 val.validate_path(new_map, astar_path_manhattan, start_point, goal_point)
-                pp.plotMap(new_map, astar_path_manhattan, title_="A* Search with Manhattan Heuristic")
+                plot_path(new_map, astar_path_manhattan, title_="A* Search with Manhattan Heuristic")
         case "random":
             print("Random search selected. Note: This may not find a path in some cases.")
             rand_path, rand_cost = formatting(search_pf=lambda: unin_ran.randomS(map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, rand_path, start_point, goal_point)
-            pp.plotMap(new_map, rand_path, title_="Random Search")
+            plot_path(new_map, rand_path, title_="Random Search")
         case "bfs":
             print("BFS search selected.")
             BFS_path, BFS_cost = formatting(search_pf=lambda: BFS.BFS(map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, BFS_path, start_point, goal_point)
-            pp.plotMap(new_map, BFS_path, title_="Breadth-First Search")
+            plot_path(new_map, BFS_path, title_="Breadth-First Search")
         case "dfs":
             print("DFS search selected.")
             DFS_path, DFS_cost = formatting(search_pf=lambda: DFS.DFS(map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, DFS_path, start_point, goal_point)
-            pp.plotMap(new_map, DFS_path, title_="Depth-First Search")
+            plot_path(new_map, DFS_path, title_="Depth-First Search")
 
 
