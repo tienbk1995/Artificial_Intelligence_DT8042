@@ -1,7 +1,10 @@
-# An example of search algorithm, feel free to modify and implement the missing part
-import random
-import numpy as np
+import sys
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from collections import deque
 '''Generates a random 2d map with obstacles (small blocks) randomly distributed. 
     You can specify any size of this map but your solution has to be independent of map size
 
@@ -43,45 +46,45 @@ def reconstruct_path(came_from, start, goal):
 
     return path
 
-# random search algorithm
-def randomS(map, start, goal):
+def BFS(map, start, goal):
 
     # cost moving to another cell
     moving_cost = 1
+
     # open list
-    frontier = [start]
-    # explored nodes
-    explored = set()
-    # current path
+    frontier = deque([start])
+
+    visited = [start]
+
+    # path taken
     came_from = {start: None}
-    # current cost
+
+    # expanded list with cost value for each cell
     cost = {start: 0}
 
     expanded_nodes = 0
 
+    # if there is still nodes to open
     while frontier:
-        current = random.choice(frontier)
-        frontier.remove(current)
-        explored.add(current)
+        current = frontier.popleft()
+
         expanded_nodes += 1
+
+        # check if the goal is reached
         if current == goal:
             break
-        
-        for neighbor in get_neighbors(map, current):
-            if neighbor is None:
-                continue
 
-            neighbor_x, neighbor_y = neighbor
-            neighbor_value = map[neighbor_x][neighbor_y]
-            # Check if the neighbor is not in explored, not in frontier, and is not an obstacle
-            if neighbor not in explored and neighbor not in frontier:
+        for neighbor in get_neighbors(map, current):
+
+            if neighbor not in visited:
+                visited.append(neighbor)
                 frontier.append(neighbor)
                 came_from[neighbor] = current
                 cost[neighbor] = cost[current] + moving_cost
 
     if goal not in came_from:
         return None, float('inf'), expanded_nodes  # Return None and infinite cost if the goal is not reachable
-    
+
     path = reconstruct_path(came_from, start, goal)
-    
+
     return path, cost[goal], expanded_nodes

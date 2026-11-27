@@ -1,7 +1,13 @@
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from Lab_2.Task_1.Code_Sample import path_planning as pp
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-from Code_Sample import path_planning as pp
 import unin_random as unin_ran
 import unin_BFS as BFS
 import unin_DFS as DFS
