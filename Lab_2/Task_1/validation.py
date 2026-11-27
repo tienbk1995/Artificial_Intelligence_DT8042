@@ -4,11 +4,11 @@ def validate_path(map, path, start, goal):
         raise Exception("Error: no path found")
 
     # Check starting position
-    if path[0] != start:
+    if tuple(path[0]) != start:
         raise Exception("Error: Incorrect starting position")
 
     # Check goal position
-    if path[-1] != goal:
+    if tuple(path[-1]) != goal:
         raise Exception("Error: Incorrect goal position")
 
     # Check obstacles and movements

@@ -232,4 +232,5 @@ def example():
 
     plotMap(example_solved_map, example_solved_path)
 
+# example()
 
