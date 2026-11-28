@@ -4,7 +4,6 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from sys import path
 import numpy as np
 from Lab_2.Task_1.Code_Sample.search_algorithm import PriorityQueue
 '''Generates a random 2d map with obstacles (small blocks) randomly distributed. 

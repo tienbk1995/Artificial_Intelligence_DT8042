@@ -99,6 +99,7 @@ def generateMap2d_obstacle(size_):
 
     map2d[goalp[1],goalp[0]] = -3
     #return map2d, [startp[1], startp[0]], [goalp[1], goalp[0]], [ytop, ybot]
+    # print(f'max x: {maxx}, min x: {minx}')
     return map2d, [ytop, ybot, minx]
 
 
@@ -157,7 +158,7 @@ def plotMap(map2d_, path_, title_ ='', *, vmin=None, vmax=None,
     locStart, locEnd = np.where(map2d_ == -2), np.where(map2d_ == -3)
     
     colorsMap2d[locStart[0][0]][locStart[1][0]] = [.0, .0, .0, 1.0]  # black
-    colorsMap2d[locEnd[0][0]][locEnd[1][0]] = [.0, .0, .0, .0]  # white
+    colorsMap2d[locEnd[0][0]][locEnd[1][0]] = [.0, .0, 1.0, 1.0]  # blue
 
     # Assign RGB Val for obstacle
     locObstacle = np.where(map2d_ == -1)
@@ -242,6 +243,13 @@ def example_2dMap_Obstacle():
 
     example_solved_map = map_h_object
     example_solved_path = np.array([[xx, xx*2] if xx % 2 == 0 else [xx, xx+1] for xx in range(20)])
+
+    # start_point = (np.where(example_solved_map == -2)[0][0], np.where(example_solved_map == -2)[1][0])
+    # goal_point = (np.where(example_solved_map == -3)[0][0], np.where(example_solved_map == -3)[1][0])
+    # start_point = tuple(map(int, start_point))
+    # goal_point = tuple(map(int, goal_point))
+    # print(f"Start point: {start_point}")
+    # print(f"Goal point: {goal_point}")
 
     print("path", example_solved_path)
 
