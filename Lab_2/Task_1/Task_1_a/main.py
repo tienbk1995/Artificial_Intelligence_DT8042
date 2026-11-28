@@ -8,6 +8,8 @@ from Lab_2.Task_1.Code_Sample import path_planning as pp
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
 import unin_random as unin_ran
 import unin_BFS as BFS
 import unin_DFS as DFS
@@ -84,6 +86,80 @@ def performance(path_length=[ ], cost=[ ], expanded_nodes=[ ]):
 
     plt.tight_layout()
     plt.show()
+
+def calculate_performance_metrics(path_length_list=[ ], cost_list=[ ], expanded_nodes_list=[ ]):
+    algo_names = [
+        "Greedy (Euclidean)",
+        "Greedy (Manhattan)",
+        "A* (Euclidean)",
+        "A* (Manhattan)",
+        "Random",
+        "BFS",
+        "DFS",
+    ]
+    path_length_avg = []
+    cost_avg = []
+    expanded_nodes_avg = []
+
+    for algo_idx in range(len(algo_names)):
+        path_length_avg_algo = sum(test[algo_idx] for test in path_length_list) / len(path_length_list)
+        path_length_avg.append(path_length_avg_algo)
+
+    for algo_idx in range(len(algo_names)):
+        cost_avg_algo = sum(test[algo_idx] for test in cost_list) / len(cost_list)
+        cost_avg.append(cost_avg_algo)
+
+    for algo_idx in range(len(algo_names)):
+        expanded_nodes_avg_algo = sum(test[algo_idx] for test in expanded_nodes_list) / len(expanded_nodes_list)
+        expanded_nodes_avg.append(expanded_nodes_avg_algo)
+
+    return path_length_avg, cost_avg, expanded_nodes_avg
+
+
+def export_results_to_csv(
+    path_length_avg,
+    cost_avg,
+    expanded_nodes_avg,
+    map_size,
+    start_point,
+    goal_point,
+    num_tests,
+    filename="Task_1b_Results.csv"
+):
+
+    algorithms = [
+        "Greedy (Euclidean)",
+        "Greedy (Manhattan)",
+        "A* (Euclidean)",
+        "A* (Manhattan)",
+        "Random",
+        "BFS",
+        "DFS",
+    ]
+
+    length_algorithms = len(algorithms)
+
+    results = {
+        "Map Width": [map_size[0]] * length_algorithms,
+        "Map Height": [map_size[1]] * length_algorithms,
+        "Start Point": [str(start_point)] * length_algorithms,
+        "Goal Point": [str(goal_point)] * length_algorithms,
+        "Number of Tests": [num_tests] * length_algorithms,
+        "Algorithm": algorithms,
+        "Average Path Length": path_length_avg,
+        "Average Cost": cost_avg,
+        "Average Expanded Nodes": expanded_nodes_avg
+    }
+
+    df = pd.DataFrame(results)
+
+    output_path = (
+        Path(__file__).resolve().parent / filename
+    )
+
+    df.to_csv(output_path, index=False)
+
+    print(f"Results exported to: {output_path}")
 
 if __name__ == "__main__":
     size_x, size_y = random.randint(20, 100), random.randint(20, 100)

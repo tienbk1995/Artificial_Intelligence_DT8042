@@ -8,6 +8,8 @@ from Lab_2.Task_1.Code_Sample import path_planning as pp
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
 
 import Lab_2.Task_1.Task_1_a.unin_random as unin_ran
 import Lab_2.Task_1.Task_1_a.unin_BFS as BFS
@@ -15,6 +17,8 @@ import Lab_2.Task_1.Task_1_a.unin_DFS as DFS
 import Lab_2.Task_1.Task_1_a.in_greedy as greedy
 import Lab_2.Task_1.Task_1_a.in_astar as astar
 import Lab_2.Task_1.Task_1_a.validation as val
+import in_astar_new as astar_new
+
 
 
 def init_map(size_):
@@ -96,6 +100,83 @@ def performance(path_length=[ ], cost=[ ], expanded_nodes=[ ]):
     plt.tight_layout()
     plt.show()
 
+def calculate_performance_metrics(path_length_list=[ ], cost_list=[ ], expanded_nodes_list=[ ]):
+    algo_names = [
+        "Greedy (Euclidean)",
+        "Greedy (Manhattan)",
+        "A* (Euclidean)",
+        "A* (Manhattan)",
+        "Random",
+        "BFS",
+        "DFS",
+        "A* (Custom Heuristic)"
+    ]
+    path_length_avg = []
+    cost_avg = []
+    expanded_nodes_avg = []
+
+    for algo_idx in range(len(algo_names)):
+        path_length_avg_algo = sum(test[algo_idx] for test in path_length_list) / len(path_length_list)
+        path_length_avg.append(path_length_avg_algo)
+
+    for algo_idx in range(len(algo_names)):
+        cost_avg_algo = sum(test[algo_idx] for test in cost_list) / len(cost_list)
+        cost_avg.append(cost_avg_algo)
+
+    for algo_idx in range(len(algo_names)):
+        expanded_nodes_avg_algo = sum(test[algo_idx] for test in expanded_nodes_list) / len(expanded_nodes_list)
+        expanded_nodes_avg.append(expanded_nodes_avg_algo)
+
+    return path_length_avg, cost_avg, expanded_nodes_avg
+
+
+def export_results_to_csv(
+    path_length_avg,
+    cost_avg,
+    expanded_nodes_avg,
+    map_size,
+    start_point,
+    goal_point,
+    num_tests,
+    filename="Task_1b_Results.csv"
+):
+
+    algorithms = [
+        "Greedy (Euclidean)",
+        "Greedy (Manhattan)",
+        "A* (Euclidean)",
+        "A* (Manhattan)",
+        "Random",
+        "BFS",
+        "DFS",
+        "A* (Custom)"
+    ]
+
+    length_algorithms = len(algorithms)
+
+    results = {
+        "Map Width": [map_size[0]] * length_algorithms,
+        "Map Height": [map_size[1]] * length_algorithms,
+        "Start Point": [str(start_point)] * length_algorithms,
+        "Goal Point": [str(goal_point)] * length_algorithms,
+        "Number of Tests": [num_tests] * length_algorithms,
+        "Algorithm": algorithms,
+        "Average Path Length": path_length_avg,
+        "Average Cost": cost_avg,
+        "Average Expanded Nodes": expanded_nodes_avg
+    }
+
+    df = pd.DataFrame(results)
+
+    output_path = (
+        Path(__file__).resolve().parent / filename
+    )
+
+    df.to_csv(output_path, index=False)
+
+    print(f"Results exported to: {output_path}")
+
+
 if __name__ == "__main__":
     size_x, size_y = random.randint(30, 100), random.randint(45, 100)
 
@@ -111,39 +192,71 @@ if __name__ == "__main__":
                 print("Invalid heuristic choice. Please choose 'euclidean' or 'manhattan'.")
                 exit(1)
             elif heuristic_choice == "eucl":
-                greedy_path_euclidean, greedy_cost_euclidean, greedy_expanded_nodes = formatting(search_pf=lambda: greedy.greedy_search(map=new_map, start=start_point, goal=goal_point, heuristic=greedy.euclidean_distance))
+                greedy_path_euclidean, greedy_cost_euclidean, greedy_expanded_nodes = formatting(search_pf=lambda: greedy.greedy_search
+                                                                                                 (map=new_map, start=start_point, goal=goal_point, 
+                                                                                                  heuristic=greedy.euclidean_distance))
                 val.validate_path(new_map, greedy_path_euclidean, start_point, goal_point)
                 plot_path(new_map, greedy_path_euclidean, title_="Greedy Search with Euclidean Heuristic")
             elif heuristic_choice == "manh":
-                greedy_path_manhattan, greedy_cost_manhattan, greedy_expanded_nodes = formatting(search_pf=lambda: greedy.greedy_search(map=new_map, start=start_point, goal=goal_point, heuristic=greedy.manhattan_distance))
+                greedy_path_manhattan, greedy_cost_manhattan, greedy_expanded_nodes = formatting(search_pf=lambda: greedy.greedy_search(
+                                                                                                map=new_map, start=start_point, goal=goal_point, 
+                                                                                                heuristic=greedy.manhattan_distance))
                 val.validate_path(new_map, greedy_path_manhattan, start_point, goal_point)
                 plot_path(new_map, greedy_path_manhattan, title_="Greedy Search with Manhattan Heuristic")
         case "astar":
-            heuristic_choice = input("Enter the heuristic to use (eucl, manh): ").strip().lower()
-            if heuristic_choice not in ["eucl", "manh"]:
-                print("Invalid heuristic choice. Please choose 'euclidean' or 'manhattan'.")
+            astar_type = input("Enter the A* type to use (normal, custom): ").strip().lower()
+            heuristic_choice = input("Enter the heuristic to use (eucl, manh, custom): ").strip().lower()
+            if heuristic_choice not in ["eucl", "manh", "custom"]:
+                print("Invalid heuristic choice. Please choose 'euclidean' or 'manhattan' or 'custom'.")
                 exit(1)
             elif heuristic_choice == "eucl":
-                astar_path_euclidean, astar_cost_euclidean, astar_expanded_nodes = formatting(search_pf=lambda: astar.A_star_search(map=new_map, start=start_point, goal=goal_point, heuristic=astar.euclidean_distance))
+                astar_path_euclidean, astar_cost_euclidean, astar_expanded_nodes = formatting(search_pf=lambda: astar_new.A_star_search_custom
+                                                                                              (map=new_map, start=start_point, goal=goal_point,
+                                                                                               obstacle_info=None, 
+                                                                                               heuristic=astar_new.euclidean_distance,
+                                                                                               make_custom_heuristic=None, 
+                                                                                               plot_map=None))
                 val.validate_path(new_map, astar_path_euclidean, start_point, goal_point)
                 plot_path(new_map, astar_path_euclidean, title_="A* Search with Euclidean Heuristic")
             elif heuristic_choice == "manh":
-                astar_path_manhattan, astar_cost_manhattan, astar_expanded_nodes = formatting(search_pf=lambda: astar.A_star_search(map=new_map, start=start_point, goal=goal_point, heuristic=astar.manhattan_distance))
+                astar_path_manhattan, astar_cost_manhattan, astar_expanded_nodes = formatting(search_pf=lambda: astar_new.A_star_search_custom
+                                                                                              (map=new_map, start=start_point, goal=goal_point,
+                                                                                               obstacle_info=None, 
+                                                                                               heuristic=astar_new.manhattan_distance,
+                                                                                                make_custom_heuristic=None,
+                                                                                                plot_map=None
+                                                                                               ))
                 val.validate_path(new_map, astar_path_manhattan, start_point, goal_point)
                 plot_path(new_map, astar_path_manhattan, title_="A* Search with Manhattan Heuristic")
+            elif heuristic_choice == "custom" and astar_type == "custom":
+                astar_path_custom, astar_cost_custom, astar_expanded_nodes = formatting(search_pf=lambda: astar_new.A_star_search_custom
+                                                                                         (map=new_map, start=start_point, goal=goal_point,
+                                                                                          obstacle_info=obstacle_info, 
+                                                                                          heuristic=None,
+                                                                                          make_custom_heuristic=astar_new.make_custom_heuristic,
+                                                                                          plot_map=astar_new.plot_relaxed_map
+                                                                                         ))
+                val.validate_path(new_map, astar_path_custom, start_point, goal_point)
+                plot_path(new_map, astar_path_custom, title_="A* Search with Custom Heuristic")
+            else:
+                print("Invalid A* type or heuristic choice. Please choose 'normal' or 'custom' for A* and 'euclidean', 'manhattan', or 'custom' for heuristic.")
+                exit(1)
         case "random":
             print("Random search selected. Note: This may not find a path in some cases.")
-            rand_path, rand_cost, rand_expanded_nodes = formatting(search_pf=lambda: unin_ran.randomS(map=new_map, start=start_point, goal=goal_point))
+            rand_path, rand_cost, rand_expanded_nodes = formatting(search_pf=lambda: unin_ran.randomS(
+                                                                map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, rand_path, start_point, goal_point)
             plot_path(new_map, rand_path, title_="Random Search")
         case "bfs":
             print("BFS search selected.")
-            BFS_path, BFS_cost, BFS_expanded_nodes = formatting(search_pf=lambda: BFS.BFS(map=new_map, start=start_point, goal=goal_point))
+            BFS_path, BFS_cost, BFS_expanded_nodes = formatting(search_pf=lambda: BFS.BFS(
+                                                                map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, BFS_path, start_point, goal_point)
             plot_path(new_map, BFS_path, title_="Breadth-First Search")
         case "dfs":
             print("DFS search selected.")
-            DFS_path, DFS_cost, DFS_expanded_nodes = formatting(search_pf=lambda: DFS.DFS(map=new_map, start=start_point, goal=goal_point))
+            DFS_path, DFS_cost, DFS_expanded_nodes = formatting(search_pf=lambda: DFS.DFS(
+                                                                map=new_map, start=start_point, goal=goal_point))
             val.validate_path(new_map, DFS_path, start_point, goal_point)
             plot_path(new_map, DFS_path, title_="Depth-First Search")
 

@@ -4,6 +4,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(PROJECT_ROOT))
 
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 import numpy as np
 from collections import deque
 from Lab_2.Task_1.Code_Sample.search_algorithm import PriorityQueue
@@ -31,6 +33,35 @@ Returns:
         minx - X coordinate of the vertical wall 
 '''
 # helper
+def plot_relaxed_map(relaxed_map, start, goal):
+
+    plt.figure(figsize=(10, 8))
+
+    # White = free cells, red = vertical wall
+    colors = ListedColormap(["white", "red"])
+
+    plt.imshow(
+        (relaxed_map == -1).astype(int),
+        cmap=colors,
+        interpolation="nearest"
+    )
+
+    # Mark start and goal
+    plt.scatter(start[1], start[0],
+                color="blue", marker="o",
+                s=100, label="Start")
+
+    plt.scatter(goal[1], goal[0],
+                color="green", marker="*",
+                s=150, label="Goal")
+
+    plt.title("Relaxed Map Used by Custom Heuristic")
+    plt.xlabel("Column")
+    plt.ylabel("Row")
+    plt.legend()
+    plt.grid(True, alpha=0.2)
+    plt.show()
+
 def manhattan_distance(current, goal):
     return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
 
@@ -98,7 +129,7 @@ def make_custom_heuristic(map2d, obstacle_info):
     def heuristic(current, goal):
         return distances[current]
 
-    return heuristic
+    return heuristic, relaxed_map
 
 def get_neighbors(map, current):
     current_x, current_y = current
@@ -124,10 +155,13 @@ def reconstruct_path(came_from, start, goal):
 
     return path
 
-def A_star_search(map, start, goal, obstacle_info, heuristic, make_custom_heuristic=None):
+def A_star_search_custom(map, start, goal, obstacle_info=None, heuristic=None, make_custom_heuristic=None, plot_map=None):
 
     if make_custom_heuristic is not None:
-        heuristic = make_custom_heuristic(map, obstacle_info)
+        heuristic, relaxed_map = make_custom_heuristic(map, obstacle_info)
+
+    if plot_map is not None:
+        plot_map(relaxed_map, start, goal)
 
     start_cost = heuristic(start, goal)  # Calculate heuristic for the start node
 
