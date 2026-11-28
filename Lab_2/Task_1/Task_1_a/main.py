@@ -40,10 +40,50 @@ def formatting(search_pf=False):
         print(f"Step {i}: {position}")
     return (path, cost, expanded_nodes)
 
-def plot_path(map, path, title_="Path Planning"):
+def plot_path(map, path=np.array([[xx, xx*2] if xx % 2 == 0 else [xx, xx+1] for xx in range(20)]), title_="Path Planning"):
     # Convert only for visualization
     plot_path = np.asarray(path)[:, ::-1]
     pp.plotMap(map, plot_path, title_=title_)
+
+def performance(path_length=[ ], cost=[ ], expanded_nodes=[ ]):
+    algo_names = [
+        "Greedy (Euclidean)",
+        "Greedy (Manhattan)",
+        "A* (Euclidean)",
+        "A* (Manhattan)",
+        "Random",
+        "BFS",
+        "DFS",
+    ]
+
+    fig, axes = plt.subplots(1, 3, figsize=(14, 7))
+
+    # Path Length
+    axes[0].plot(range(len(algo_names)), path_length, marker='o')
+    axes[0].set_title("Path Length")
+    axes[0].set_xlabel("Search Algorithm")
+    axes[0].set_ylabel("Length")
+    axes[0].set_xticks(range(len(algo_names)))
+    axes[0].set_xticklabels(algo_names, rotation=35, ha="right")
+
+    # Total Cost
+    axes[1].plot(range(len(algo_names)), cost, marker='o', color='orange')
+    axes[1].set_title("Total Cost")
+    axes[1].set_xlabel("Search Algorithm")
+    axes[1].set_ylabel("Cost")
+    axes[1].set_xticks(range(len(algo_names)))
+    axes[1].set_xticklabels(algo_names, rotation=35, ha="right")
+
+    # Expanded Nodes
+    axes[2].plot(range(len(algo_names)), expanded_nodes, marker='o', color='green')
+    axes[2].set_title("Expanded Nodes")
+    axes[2].set_xlabel("Search Algorithm")
+    axes[2].set_ylabel("Nodes")
+    axes[2].set_xticks(range(len(algo_names)))
+    axes[2].set_xticklabels(algo_names, rotation=35, ha="right")
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     size_x, size_y = random.randint(20, 100), random.randint(20, 100)

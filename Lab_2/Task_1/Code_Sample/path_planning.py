@@ -193,7 +193,7 @@ def plotMap(map2d_, path_, title_ ='', *, vmin=None, vmax=None,
     plt.show()
 
 
-def example():
+def example_2dMap():
     # create a map with obstacles randomly distributed
     #  0 - Free cell
     # -1 - Obstacle
@@ -204,6 +204,21 @@ def example():
     plt.imshow(_map_)
     plt.show()
 
+    # example for a solved_map
+    #  0 - unexpanded cell
+    # -1 - obstacle
+    # -2 - start point
+    # -3 - goal point
+    # positive_numbers - one type of the values described in lab2 description (heuristic cost, travel cost, cell total cost,...)
+
+    example_solved_map = _map_
+    example_solved_path = np.array([[xx, xx*2] if xx % 2 == 0 else [xx, xx+1] for xx in range(20)])
+
+    print("path", example_solved_path)
+
+    plotMap(example_solved_map, example_solved_path)
+
+def example_2dMap_Obstacle():
     # map with rotated-H shape obstacle and obstacles randomly distributed
     map_h_object, info = generateMap2d_obstacle([60, 60])
 
@@ -232,5 +247,5 @@ def example():
 
     plotMap(example_solved_map, example_solved_path)
 
-# example()
+# example_2dMap_Obstacle()
 
